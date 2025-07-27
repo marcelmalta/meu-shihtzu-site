@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Notícia</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tiny.cloud/1/6j8mcpiz9296bqj68k211s1zjnz3bbunjit9dr6xzzcrru7h/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+<body>
+  <%- include('partials/header') %>
+  <main class="main-content">
+    <div class="container">
+      <h2>Editar Notícia</h2>
+      <form id="news-form" action="/admin/noticias/editar/<%= post._id %>" method="POST" class="forum-form">
+        <div class="form-group">
+          <label for="title">Título</label>
+          <input type="text" id="title" name="title" value="<%= post.title %>" required>
+        </div>
+        <div class="form-group">
+          <label for="slug">Slug (URL amigável)</label>
+          <input type="text" id="slug" name="slug" value="<%= post.slug %>" required>
+        </div>
+        <div class="form-group">
+          <label for="description">Descrição Curta</label>
+          <textarea id="description" name="description" rows="3" required><%= post.description %></textarea>
+        </div>
+        <div class="form-group">
+           <label for="content">Conteúdo Completo</label>
+           <textarea id="news-editor" name="content" rows="10"><%= post.content %></textarea>
+        </div>
+        <div class="form-group">
+          <label for="imageUrl">URL da Imagem de Capa</label>
+          <input type="text" id="imageUrl" name="imageUrl" value="<%= post.imageUrl %>">
+        </div>
+
+        <hr style="margin: 2rem 0;">
+        <h3 style="margin-bottom: 1.5rem; text-align: center;">Conteúdo Multimédia (Opcional)</h3>
+
+        <div class="form-group">
+          <label for="youtubeVideoId">ID do Vídeo do YouTube</label>
+          <input type="text" id="youtubeVideoId" name="youtubeVideoId" value="<%= post.youtubeVideoId || '' %>" placeholder="Apenas o código de 11 caracteres do link">
+        </div>
+        <div class="form-group">
+          <label for="galleryImageUrls">URLs da Galeria de Imagens (uma por linha)</label>
+          <textarea id="galleryImageUrls" name="galleryImageUrls" rows="5" placeholder="https://exemplo.com/imagem1.jpg\nhttps://exemplo.com/imagem2.jpg"><%= post.galleryImageUrls ? post.galleryImageUrls.join('\n') : '' %></textarea>
+        </div>
+
+        <button type="submit" class="read-more">Salvar Alterações</button>
+      </form>
+    </div>
+  </main>
+  <%- include('partials/footer') %>
+
+  <script>
+    tinymce.init({
+      selector: '#news-editor',
+      plugins: 'lists link image emoticons media table wordcount autoresize',
+      toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | emoticons',
+      language: 'pt_BR',
+      menubar: false,
+      statusbar: false,
+      autoresize_bottom_margin: 20
+    });
+
+    const newsForm = document.getElementById('news-form');
+    newsForm.addEventListener('submit', function(event) {
+      tinymce.triggerSave();
+      const content = document.getElementById('news-editor').value;
+      if (content.trim() === '') {
+        alert('O campo "Conteúdo Completo" não pode ficar vazio.');
+        event.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>

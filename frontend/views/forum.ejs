@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fórum | Shih Tzu Notícias</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <%- include('partials/header') %>
+
+  <main class="main-content">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <h2><%= pageTitle %></h2>
+        <% if (currentUser) { %>
+          <a href="/forum/novo-topico" class="read-more" style="margin-left: auto;">Criar Novo Tópico</a>
+        <% } %>
+      </div>
+
+      <div class="forum-filters">
+        <div class="filter-section">
+          <span class="filter-label">Categorias:</span>
+          <div class="filter-options">
+            <a href="/forum?sort=<%= currentSort %>" class="<%= currentCategory === 'all' ? 'active' : '' %>">Todas</a>
+            <% categories.forEach(category => { %>
+              <a href="/forum?category=<%= category.slug %>&sort=<%= currentSort %>" class="<%= currentCategory === category.slug ? 'active' : '' %>"><%= category.name %></a>
+            <% }) %>
+          </div>
+        </div>
+        <div class="filter-section">
+          <span class="filter-label">Ordenar por:</span>
+          <div class="filter-options">
+            <a href="/forum?category=<%= currentCategory %>&sort=recent" class="<%= currentSort === 'recent' ? 'active' : '' %>">Mais Recentes</a>
+            <a href="/forum?category=<%= currentCategory %>&sort=popular" class="<%= currentSort === 'popular' ? 'active' : '' %>">Mais Populares</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-form" style="margin: 2rem 0;">
+        <form action="/forum" method="GET">
+          <input type="text" name="q" placeholder="Pesquisar tópicos por título ou conteúdo..." value="<%= searchQuery %>" style="width: 100%; padding: 0.75rem; border-radius: 5px; border: 1px solid #ccc;">
+          <button type="submit" class="read-more" style="margin-top: 10px;">Pesquisar</button>
+        </form>
+      </div>
+      <hr>
+
+      <div class="thread-grid">
+        <% if (threads.length > 0) { %>
+           <% threads.forEach(thread => { %>
+            <article class="thread-card">
+              <a href="/forum/topico/<%= thread._id %>">
+                <div class="card-thumbnail">
+                  <% if (thread.imageUrl) { %>
+                    <img src="<%= thread.imageUrl %>" alt="<%= thread.title %>" class="card-thumbnail-img">
+                  <% } else if (thread.youtubeVideoId) { %>
+                    <img src="https://www.youtube.com/watch?v=XopIwK_Sm646<%= thread.youtubeVideoId %>/mqdefault.jpg" alt="<%= thread.title %>" class="card-thumbnail-img">
+                  <% } else if (thread.category && thread.category.defaultImageUrl) { %>
+                    <img src="<%= thread.category.defaultImageUrl %>" alt="<%= thread.category.name %>" class="card-thumbnail-img">
+                  <% } %>
+                </div>
+              </a>
+              
+              <div class="card-content">
+                <a href="/forum/topico/<%= thread._id %>" style="text-decoration: none; color: inherit;">
+                  <h3 class="card-title"><%= thread.title %></h3>
+                </a>
+                <p class="card-meta">
+                  <% if (thread.category) { %>
+                    <a href="/forum?category=<%= thread.category.slug %>&sort=<%= currentSort %>" class="category-badge" style="text-decoration: none;"><%= thread.category.name %></a><br>
+                  <% } else { %>
+                    <span class="category-badge">Sem Categoria</span><br>
+                  <% } %>
+                  <span><%= thread.replyCount %> Respostas</span> • Criado por: <%= thread.author %>
+                </p>
+              </div>
+
+              <% if (currentUser && currentUser.role === 'admin') { %>
+                <div class="card-admin-actions">
+                  <form action="/forum/topico/<%= thread._id %>/excluir" method="POST">
+                    <button type="submit" class="delete-btn" onclick="return confirm('Tem certeza? Isso apagará o tópico e TODAS as suas respostas.');">Excluir Tópico</button>
+                  </form>
+                </div>
+              <% } %>
+
+            </article>
+          <% }) %>
+        <% } else { %>
+          <p>Nenhum tópico encontrado com os filtros selecionados.</p>
+        <% } %>
+      </div>
+      
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+
+</body>
+</html>

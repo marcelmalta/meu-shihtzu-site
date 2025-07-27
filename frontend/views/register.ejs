@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro | Shih Tzu Notícias</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <%- include('partials/header') %>
+
+  <main class="main-content">
+    <div class="container">
+      <h2>Criar Nova Conta</h2>
+      <form action="/cadastro" method="POST" class="forum-form">
+        <div class="form-group">
+          <label for="username">Nome de Utilizador</label>
+          <input type="text" id="username" name="username" required>
+          <small id="username-error" style="color: #dc3545; display: none;"></small>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <input type="password" id="password" name="password" required>
+          <small id="password-error" style="color: #dc3545; display: none;"></small>
+        </div>
+        <button type="submit" id="submit-btn" class="read-more" disabled>Cadastrar</button>
+      </form>
+
+      <div class="auth-link-container">
+        <a href="/login" class="auth-link">Já tem uma conta? Faça login</a>
+      </div>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+
+  <script>
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const submitButton = document.getElementById('submit-btn');
+    const usernameError = document.getElementById('username-error');
+    const passwordError = document.getElementById('password-error');
+
+    // Expressão regular atualizada para permitir espaços
+    const usernameRegex = /^[a-zA-ZÀ-ÿ0-9_ ]+$/;
+
+    function validateForm() {
+      const username = usernameInput.value;
+      const password = passwordInput.value;
+      
+      let isUsernameLengthValid = username.length >= 3 && username.length <= 25;
+      let isUsernameFormatValid = usernameRegex.test(username);
+      let isPasswordValid = password.length >= 6;
+
+      // --- Validação do Nome de Utilizador ---
+      if (username.length > 0) {
+          if (!isUsernameLengthValid) {
+              usernameError.textContent = 'O nome de utilizador deve ter entre 3 e 25 caracteres.';
+              usernameError.style.display = 'block';
+          } else if (!isUsernameFormatValid) {
+              usernameError.textContent = 'O nome de utilizador só pode conter letras, números, espaços e underscores (_).';
+              usernameError.style.display = 'block';
+          } else {
+              usernameError.style.display = 'none';
+          }
+      } else {
+          usernameError.style.display = 'none';
+      }
+
+      // --- Validação da Senha ---
+      if (password.length > 0 && !isPasswordValid) {
+        passwordError.textContent = 'A senha deve ter no mínimo 6 caracteres.';
+        passwordError.style.display = 'block';
+      } else {
+        passwordError.style.display = 'none';
+      }
+
+      // --- Ativa ou desativa o botão ---
+      if (isUsernameLengthValid && isUsernameFormatValid && isPasswordValid) {
+        submitButton.disabled = false;
+      } else {
+        submitButton.disabled = true;
+      }
+    }
+
+    usernameInput.addEventListener('input', validateForm);
+    passwordInput.addEventListener('input', validateForm);
+  </script>
+
+</body>
+</html>

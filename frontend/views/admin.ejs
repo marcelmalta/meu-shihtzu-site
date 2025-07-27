@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Administração</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <%- include('partials/header') %>
+  <main class="main-content">
+    <div class="container">
+      <h2>Painel de Administração</h2>
+      <p>Bem-vindo, <%= currentUser.username %>. Use os links abaixo para gerenciar o site.</p>
+      
+      <div class="admin-links" style="margin-top: 2rem;">
+        <a href="/admin/noticias" class="read-more">Gerenciar Notícias</a>
+        <a href="/admin/forum/moderacao" class="read-more">Moderar Fórum</a>
+      </div>
+    </div>
+  </main>
+  <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <title>Shih Tzu Notícias</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <%- include('partials/header') %>
+
+  <main class="main-content">
+    <div class="container">
+      
+      <% if (posts && posts.length > 0) { %>
+        <% const featuredPost = posts[0]; %>
+        <% const recentPosts = posts.slice(1); %>
+
+        <section class="hero-post">
+          <div class="hero-post-image">
+            <a href="/post/<%= featuredPost.slug %>">
+              <img src="<%= featuredPost.imageUrl %>" alt="<%= featuredPost.title %>">
+            </a>
+          </div>
+          <div class="hero-post-content">
+            <h2><%= featuredPost.title %></h2>
+            <p><%= featuredPost.description %></p>
+            <a href="/post/<%= featuredPost.slug %>" class="read-more">Ler a Notícia Completa</a>
+          </div>
+        </section>
+
+        <% if (recentPosts.length > 0) { %>
+          <h2 class="recent-posts-title">Mais Notícias</h2>
+          <section class="post-grid">
+            <% recentPosts.forEach(post => { %>
+              <article class="post-card">
+                <a href="/post/<%= post.slug %>">
+                  <div class="post-image">
+                    <img src="<%= post.imageUrl %>" alt="<%= post.title %>" class="card-thumbnail-img">
+                  </div>
+                </a>
+                <div class="post-content">
+                  <h3><%= post.title %></h3>
+                  <p><%= post.description %></p>
+                  <a href="/post/<%= post.slug %>" class="read-more">Ler Mais</a>
+                </div>
+              </article>
+            <% }) %>
+          </section>
+        <% } %>
+
+      <% } else { %>
+        <h2 style="text-align: center;">Nenhuma notícia publicada ainda.</h2>
+      <% } %>
+      
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+
+</body>
+</html>

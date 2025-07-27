@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= post.title %> | Shih Tzu Notícias</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <%- include('partials/header') %>
+
+  <main class="main-content">
+    <div class="container">
+      
+      <div class="post-layout">
+
+        <div class="post-main-content">
+          <article class="single-post" style="margin: 0; max-width: none;">
+            <h2><%= post.title %></h2>
+            
+            <div class="post-body">
+               <%- post.content %>
+            </div>
+          </article>
+    
+          <hr style="margin: 2rem 0;">
+          <section id="comments-section" class="comments-section">
+            <h3>Comentários</h3>
+    
+            <% if (currentUser) { %>
+              <div class="reply-form">
+                <form action="/post/<%= post.slug %>/comentar" method="POST">
+                  <div class="form-group">
+                    <textarea name="content" rows="4" required placeholder="Escreva seu comentário..."></textarea>
+                  </div>
+                  <button type="submit" class="read-more">Comentar</button>
+                </form>
+              </div>
+            <% } else { %>
+              <p><a href="/login">Faça login</a> para deixar um comentário.</p>
+            <% } %>
+    
+            <div class="replies-list" style="margin-top: 2rem;">
+              <% if (comments && comments.length > 0) { %>
+                <% comments.forEach(comment => { %>
+                  <div class="reply-item">
+                    <div style="flex-grow: 1;">
+                      <p class="post-meta">Por <strong><%= comment.authorName %></strong> em <%= comment.createdAt.toLocaleDateString('pt-BR') %></p>
+                      <p><%= comment.content %></p>
+                      <div class="comment-actions" style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
+                        <% if (currentUser) { %>
+                          <form action="/comentario/<%= comment._id %>/curtir" method="POST">
+                            <% if (comment.likes.includes(currentUser.id)) { %>
+                              <button type="submit" class="like-btn liked">❤️ Descurtir</button>
+                            <% } else { %>
+                              <button type="submit" class="like-btn">🤍 Curtir</button>
+                            <% } %>
+                          </form>
+                        <% } %>
+                        <span><%= comment.likes.length %> Curtidas</span>
+                      </div>
+                    </div>
+                    <% if (currentUser && currentUser.role === 'admin') { %>
+                      <form action="/comentario/<%= comment._id %>/excluir" method="POST" style="margin-left: auto;">
+                        <button type="submit" class="delete-btn" onclick="return confirm('Tem certeza que deseja excluir este comentário?');">Excluir</button>
+                      </form>
+                    <% } %>
+                  </div>
+                <% }) %>
+              <% } else { %>
+                <p>Nenhum comentário ainda. Seja o primeiro!</p>
+              <% } %>
+            </div>
+          </section>
+        </div>
+
+        <aside class="post-sidebar">
+          <div class="sidebar-widget">
+            <h3 class="sidebar-widget-title">Últimas Notícias</h3>
+            <ul class="recent-post-list">
+              <% if (recentPosts && recentPosts.length > 0) { %>
+                <% recentPosts.forEach(recent => { %>
+                  <li class="recent-post-item">
+                    <a href="/post/<%= recent.slug %>">
+                      <div class="recent-post-thumb">
+                        <img src="<%= recent.imageUrl %>" alt="<%= recent.title %>">
+                      </div>
+                      <span class="recent-post-title"><%= recent.title %></span>
+                    </a>
+                  </li>
+                <% }) %>
+              <% } else { %>
+                <li>Nenhuma outra notícia encontrada.</li>
+              <% } %>
+            </ul>
+          </div>
+        </aside>
+        
+      </div>
+      
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+
+</body>
+</html>

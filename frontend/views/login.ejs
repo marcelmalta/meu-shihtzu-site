@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Shih Tzu Notícias</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <%- include('partials/header') %>
+
+  <main class="main-content">
+    <div class="container">
+      <h2>Entrar na sua Conta</h2>
+      <form action="/login" method="POST" class="forum-form">
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="read-more">Entrar</button>
+      </form>
+      <div style="text-align: center; margin-top: 1rem;">
+          <a href="/esqueci-senha">Esqueceu sua senha?</a>
+      </div>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+
+</body>
+</html>

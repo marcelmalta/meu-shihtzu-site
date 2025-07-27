@@ -1,0 +1,9 @@
+# Dependências do Node.js
+backend/node_modules/
+
+# Ficheiro de variáveis de ambiente (segredos)
+backend/.env
+
+# Ficheiros de sistema operativo (opcional, mas boa prática)
+.DS_Store
+Thumbs.db

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Ocorreu um Erro</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <%- include('partials/header') %>
+    <main class="main-content">
+        <div class="container" style="text-align: center;">
+            <h2 style="color: #dc3545;">Oops! Algo deu errado.</h2>
+            <p style="font-size: 1.2rem; margin-top: 1rem;">
+                <%= errorMessage %>
+            </p>
+            <a href="<%= backLink %>" class="read-more" style="margin-top: 2rem;">Voltar</a>
+        </div>
+    </main>
+    <%- include('partials/footer') %>
+</body>
+</html>

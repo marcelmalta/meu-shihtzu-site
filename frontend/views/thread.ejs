@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= thread.title %> | Fórum</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tiny.cloud/1/6j8mcpiz9296bqj68k211s1zjnz3bbunjit9dr6xzzcrru7h/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+<body>
+
+  <%- include('partials/header') %>
+
+  <main class="main-content">
+    <div class="container">
+      <div class="thread-post-main">
+        <h2><%= thread.title %></h2>
+        <p class="post-meta">Por <%= thread.author %> em <%= thread.createdAt.toLocaleDateString('pt-BR') %></p>
+        
+        <% if (thread.youtubeVideoId) { %>
+          <div class="video-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; margin-bottom: 1rem;">
+            <iframe
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+              src="https://www.youtube.com/embed/<%= thread.youtubeVideoId %>"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </div>
+        <% } %>
+        
+        <div class="post-body">
+           <%- thread.content %>
+        </div>
+      </div>
+      
+      <hr style="margin: 2rem 0;">
+
+      <h3 style="margin-bottom: 1rem;">Respostas</h3>
+      <div class="replies-list">
+        <% if (replies.length > 0) { %>
+          <% replies.forEach(reply => { %>
+            <div class="reply-item" style="display: flex; align-items: center;">
+              <div style="flex-grow: 1;">
+                <p class="post-meta">Por <%= reply.author %> em <%= reply.createdAt.toLocaleDateString('pt-BR') %></p>
+                <div class="post-body"><%- reply.content %></div>
+              </div>
+              <% if (currentUser && currentUser.role === 'admin') { %>
+                <form action="/forum/resposta/<%= reply._id %>/excluir" method="POST" style="margin-left: auto;">
+                   <button type="submit" class="delete-btn" onclick="return confirm('Tem certeza que deseja excluir esta resposta?');">Excluir Resposta</button>
+                </form>
+              <% } %>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <p>Nenhuma resposta ainda. Seja o primeiro a responder!</p>
+        <% } %>
+      </div>
+
+      <% if (currentUser) { %>
+        <div class="reply-form" style="margin-top: 2rem;">
+          <hr style="margin-bottom: 2rem;">
+          <h3>Deixe uma resposta</h3>
+          <form id="reply-form" action="/forum/topico/<%= thread._id %>/responder" method="POST">
+            <div class="form-group">
+              <textarea id="reply-editor" name="content" rows="5" placeholder="Escreva sua resposta aqui..."></textarea>
+             </div>
+            <button type="submit" class="read-more">Enviar Resposta</button>
+          </form>
+        </div>
+      <% } %>
+
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+
+  <script>
+    tinymce.init({
+      selector: '#reply-editor',
+      plugins: 'lists link image emoticons media table wordcount autoresize',
+      toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | emoticons',
+      language: 'pt_BR',
+      menubar: false,
+      statusbar: false,
+      autoresize_bottom_margin: 20,
+      content_css: '/css/style.css',
+      body_class: 'post-body'
+    });
+
+    const replyForm = document.getElementById('reply-form');
+    if (replyForm) {
+      replyForm.addEventListener('submit', function(event) {
+        tinymce.triggerSave();
+        const content = document.getElementById('reply-editor').value;
+        if (content.trim() === '') {
+          alert('O campo de resposta não pode ficar vazio.');
+          event.preventDefault();
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

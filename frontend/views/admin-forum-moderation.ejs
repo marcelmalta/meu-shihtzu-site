@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moderação do Fórum</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <%- include('partials/header') %>
+  <main class="main-content">
+    <div class="container">
+      <h2>Moderação de Tópicos Pendentes</h2>
+      
+      <% if (pendingThreads.length > 0) { %>
+        <% pendingThreads.forEach(thread => { %>
+          <div class="thread-item" style="border: 2px solid #f3e5f5; padding: 1.5rem; margin-bottom: 1.5rem;">
+            <h3><%= thread.title %></h3>
+            <p class="post-meta">Enviado por: <%= thread.author %> em <%= thread.createdAt.toLocaleDateString('pt-BR') %></p>
+            <hr style="margin: 1rem 0;">
+            <div class="post-body">
+              <%- thread.content %>
+            </div>
+            <div class="moderation-actions" style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+              <form action="/admin/forum/aprovar/<%= thread._id %>" method="POST">
+                <button type="submit" class="read-more">Aprovar</button>
+              </form>
+              <form action="/admin/forum/rejeitar/<%= thread._id %>" method="POST">
+                <button type="submit" class="delete-btn" onclick="return confirm('Tem certeza que deseja rejeitar (excluir) este tópico?');">Rejeitar</button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p>Não há tópicos pendentes para moderação no momento.</p>
+      <% } %>
+
+    </div>
+  </main>
+  <%- include('partials/footer') %>
+</body>
+</html>

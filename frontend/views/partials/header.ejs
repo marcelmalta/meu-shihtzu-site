@@ -1,0 +1,21 @@
+<header class="main-header">
+  <div class="container">
+    <nav style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <h1 style="margin: 0;">
+        <a href="/" style="color: white; text-decoration: none;">Shih Tzu Notícias 🐾</a>
+      </h1>
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <a href="/forum" style="color: white; text-decoration: none; font-size: 1.1rem;">Fórum</a>
+        
+        <% if (currentUser) { %>
+          <span style="color: white;">Olá, <%= currentUser.username %></span>
+          <a href="/sair" style="color: white; text-decoration: none; font-size: 1.1rem;">Sair</a>
+        <% } else { %>
+          <a href="/login" style="color: white; text-decoration: none; font-size: 1.1rem;">Login</a>
+          <a href="/cadastro" style="color: white; text-decoration: none; font-size: 1.1rem;">Cadastro</a>
+        <% } %>
+
+      </div>
+    </nav>
+  </div>
+</header>
