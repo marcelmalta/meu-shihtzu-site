@@ -538,4 +538,43 @@ a:hover {
     gap: 0.5rem;
   }
 }
-/* forçando update no Render */
+@media (max-width: 600px) {
+  .post-grid {
+    grid-template-columns: 1fr; /* Força 1 coluna no mobile */
+  }
+
+  .hero-post-content {
+    padding: 1.2rem;
+  }
+
+  .hero-post-content h2 {
+    font-size: 1.6rem;
+  }
+
+  .hero-post-content p {
+    font-size: 1rem;
+  }
+
+  .read-more {
+    width: 100%;
+    text-align: center;
+  }
+
+  .post-content h3 {
+    font-size: 1.1rem;
+  }
+
+  .post-content p {
+    font-size: 0.95rem;
+  }
+
+  .recent-posts-title {
+    font-size: 1.6rem;
+    padding-top: 2rem;
+  }
+}
+@media (max-width: 480px) {
+  .hero-post-image img {
+    height: 220px;
+  }
+}
