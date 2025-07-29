@@ -1,3 +1,4 @@
+```css
 /* =============================================== */
 /* --- FONTES DO GOOGLE --- */
 /* =============================================== */
@@ -8,7 +9,7 @@
 /* =============================================== */
 :root {
   --primary-color: #7952b3; /* Roxo um pouco mais suave */
-  --secondary-color: #f1eef6; /* Roxo bem clarinho para fundos */
+  --secondary-color: #f1eef6; /* Roxo9f09c3c9-ef91-4238-afb8-bc67d26b8f57 bem clarinho para fundos */
   --dark-color: #343a40; /* Cinza escuro para textos */
   --light-color: #fff;
   --gray-color: #6c757d; /* Cinza para textos secundários */
@@ -33,15 +34,16 @@
 
 body {
   font-family: var(--font-body);
-  line-height: 1.7; /* Aumenta o espaço entre linhas para melhor leitura */
+  line-height: 1.7;
   background-color: var(--background-color);
   color: var(--dark-color);
+  font-size: 16px; /* Base para melhor legibilidade */
 }
 
 .container {
-  max-width: 1200px; /* Um pouco mais largo para layouts modernos */
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 16px; /* Ajustado para menos padding em telas menores */
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -52,8 +54,8 @@ h1, h2, h3, h4, h5, h6 {
 
 h2 {
   text-align: center;
-  margin: 2.5rem 0;
-  font-size: 2.25rem;
+  margin: 2rem 0;
+  font-size: 2rem; /* Ajustado para ser mais proporcional */
 }
 
 a {
@@ -63,7 +65,7 @@ a {
 }
 
 a:hover {
-  color: #5a3d8a; /* Tom mais escuro do roxo */
+  color: #5a3d8a;
 }
 
 /* =============================================== */
@@ -74,14 +76,20 @@ a:hover {
   color: var(--light-color);
   padding: 1rem 0;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex; /* Melhor controle do layout */
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .main-footer {
   background: var(--dark-color);
   color: var(--light-color);
   text-align: center;
-  padding: 2.5rem 0;
-  margin-top: 3rem;
+  padding: 2rem 0;
+  margin-top: 2rem;
   font-size: 0.9rem;
 }
 
@@ -92,8 +100,8 @@ a:hover {
   display: inline-block;
   background: var(--primary-color);
   color: var(--light-color);
-  padding: 0.6rem 1.2rem;
-  border-radius: 50px; /* Botões arredondados */
+  padding: 0.75rem 1.5rem; /* Aumentado para melhor toque em celulares */
+  border-radius: 50px;
   text-decoration: none;
   font-weight: 700;
   border: none;
@@ -112,9 +120,9 @@ a:hover {
 /* =============================================== */
 .post-grid, .thread-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Ajustado para telas menores */
+  gap: 1.5rem; /* Reduzido para melhor uso do espaço */
+  margin: 1.5rem 0;
 }
 
 .post-card, .thread-card {
@@ -125,6 +133,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+  margin-bottom: 1rem; /* Espaço extra entre cards */
 }
 
 .post-card:hover, .thread-card:hover {
@@ -150,16 +159,16 @@ a:hover {
 }
 
 .post-content, .card-content {
-  padding: 1.5rem;
+  padding: 1.25rem; /* Ajustado para menos aperto */
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
 
 .post-content h3, .card-title {
-  font-size: 1.2rem;
+  font-size: 1.15rem; /* Ligeiramente menor para telas pequenas */
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .card-meta {
@@ -167,6 +176,7 @@ a:hover {
   color: var(--gray-color);
   margin-top: auto;
 }
+
 .card-meta span, .card-meta a {
   display: inline-block;
   margin-top: 0.5rem;
@@ -177,30 +187,30 @@ a:hover {
 /* =============================================== */
 .single-post, .thread-post-main {
   background: var(--light-color);
-  padding: 2rem 3rem;
+  padding: 1.5rem 2rem; /* Ajustado para telas menores */
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
   max-width: 800px;
-  margin: 2rem auto;
+  margin: 1.5rem auto;
 }
 
 .single-post h2, .thread-post-main h2 {
   text-align: left;
-  font-size: 2.5rem;
+  font-size: 2rem; /* Ajustado para melhor proporção */
   margin: 0 0 1rem 0;
 }
 
 .post-image-full {
   width: 100%;
   height: auto;
-  max-height: 450px;
+  max-height: 400px; /* Reduzido para telas menores */
   object-fit: cover;
   border-radius: var(--border-radius);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .post-body {
-  font-size: 1.1rem;
+  font-size: 1.05rem; /* Ajustado para legibilidade */
   line-height: 1.8;
 }
 
@@ -214,12 +224,12 @@ a:hover {
 /* --- COMENTÁRIOS E RESPOSTAS --- */
 /* =============================================== */
 .comments-section, .replies-list {
-  margin-top: 2.5rem;
+  margin-top: 2rem;
 }
 
 .reply-item {
   background-color: #fff;
-  padding: 1.5rem;
+  padding: 1.25rem; /* Ajustado para menos aperto */
   border-radius: var(--border-radius);
   margin-bottom: 1rem;
   border: 1px solid #e9ecef;
@@ -229,14 +239,16 @@ a:hover {
   background: none;
   border: 1px solid #ddd;
   border-radius: 20px;
-  padding: 5px 12px;
+  padding: 6px 14px; /* Aumentado para facilitar toque */
   cursor: pointer;
   transition: all 0.2s ease;
 }
+
 .like-btn:hover {
   background-color: #f8f9fa;
   border-color: #ccc;
 }
+
 .like-btn.liked {
   background-color: var(--secondary-color);
   color: var(--primary-color);
@@ -248,15 +260,15 @@ a:hover {
 /* =============================================== */
 .forum-form {
   background: #fff;
-  padding: 2rem;
+  padding: 1.5rem; /* Ajustado para telas menores */
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
   max-width: 900px;
-  margin: 2rem auto;
+  margin: 1.5rem auto;
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .form-group label {
@@ -272,7 +284,7 @@ a:hover {
 .form-group textarea,
 .form-group select {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.8rem; /* Aumentado para melhor toque */
   border-radius: 5px;
   border: 1px solid #ccc;
   font-family: var(--font-body);
@@ -321,9 +333,9 @@ a:hover {
 .category-badge {
   background-color: var(--secondary-color);
   color: var(--primary-color);
-  padding: 3px 8px;
+  padding: 4px 10px; /* Ajustado para melhor toque */
   border-radius: 5px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
 }
 
@@ -333,9 +345,9 @@ a:hover {
 .hero-post {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
+  gap: 1.5rem; /* Reduzido para telas menores */
   align-items: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   background: var(--light-color);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
@@ -344,45 +356,44 @@ a:hover {
 
 .hero-post-image img {
   width: 100%;
-  height: 400px;
+  height: 350px; /* Reduzido para telas menores */
   object-fit: cover;
   display: block;
 }
 
 .hero-post-content {
-  padding: 2rem;
+  padding: 1.5rem;
 }
 
 .hero-post-content h2 {
-  font-size: 2.5rem;
+  font-size: 2rem; /* Ajustado */
   text-align: left;
   margin: 0 0 1rem 0;
 }
 
 .hero-post-content p {
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+  margin-bottom: 1.25rem;
 }
 
 .recent-posts-title {
   text-align: center;
-  margin-bottom: 2rem;
-  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem; /* Ajustado */
   border-top: 1px solid #eee;
-  padding-top: 3rem;
+  padding-top: 2rem;
 }
 
 /* =============================================== */
 /* --- ESTILOS PARA A PÁGINA DE NOTÍCIA COM SIDEBAR --- */
 /* =============================================== */
-
 .post-layout {
   display: grid;
   grid-template-columns: 1fr 300px;
-  gap: 3rem;
+  gap: 2rem; /* Reduzido */
   align-items: flex-start;
   max-width: 1200px;
-  margin: 2rem auto;
+  margin: 1.5rem auto;
 }
 
 .post-main-content {
@@ -396,15 +407,15 @@ a:hover {
 
 .sidebar-widget {
   background: var(--light-color);
-  padding: 1.5rem;
+  padding: 1.25rem;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .sidebar-widget-title {
   font-family: var(--font-headings);
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid var(--primary-color);
@@ -449,48 +460,28 @@ a:hover {
   line-height: 1.4;
 }
 
-
-/* =============================================== */
-/* --- RESPONSIVIDADE --- */
-/* =============================================== */
-@media (max-width: 900px) {
-  .hero-post, .post-layout {
-    grid-template-columns: 1fr;
-  }
-  .hero-post-image img {
-    height: 300px;
-  }
-  .hero-post-content h2 {
-    font-size: 2rem;
-  }
-  .post-sidebar {
-    position: static;
-    top: auto;
-    margin-top: 3rem;
-  }
-}
-
 /* =============================================== */
 /* --- ESTILOS PARA OS FILTROS DO FÓRUM --- */
 /* =============================================== */
 .forum-filters {
   background: var(--light-color);
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto; /* Adicionado para evitar quebra em filtros longos */
 }
 
 .filter-section {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .filter-section:not(:last-child) {
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid #eee;
 }
 
@@ -504,9 +495,9 @@ a:hover {
   text-decoration: none;
   background-color: #f1f3f5;
   color: var(--dark-color);
-  padding: 0.4rem 0.8rem;
+  padding: 0.5rem 1rem; /* Ajustado para toque */
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   transition: all 0.2s ease;
 }
 
@@ -519,3 +510,217 @@ a:hover {
   color: var(--light-color);
   font-weight: 700;
 }
+
+/* =============================================== */
+/* --- RESPONSIVIDADE --- */
+/* =============================================== */
+@media (max-width: 768px) {
+  body {
+    font-size: 15px; /* Ajuste para melhor legibilidade em telas menores */
+  }
+
+  .container {
+    padding: 0 12px; /* Menos padding para aproveitar espaço */
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  .post-grid, .thread-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Colunas menores */
+    gap: 1rem;
+  }
+
+  .post-card, .thread-card {
+    margin-bottom: 1rem;
+  }
+
+  .post-content, .card-content {
+    padding: 1rem;
+  }
+
+  .post-content h3, .card-title {
+    font-size: 1.1rem;
+  }
+
+  .single-post, .thread-post-main {
+    padding: 1.25rem;
+    margin: 1rem 12px;
+  }
+
+  .single-post h2, .thread-post-main h2 {
+    font-size: 1.75rem;
+  }
+
+  .post-image-full {
+    max-height: 300px;
+  }
+
+  .post-body {
+    font-size: 1rem;
+  }
+
+  .hero-post {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .hero-post-image img {
+    height: 250px;
+  }
+
+  .hero-post-content {
+    padding: 1.25rem;
+  }
+
+  .hero-post-content h2 {
+    font-size: 1.75rem;
+  }
+
+  .post-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .post-sidebar {
+    position: static;
+    top: auto;
+    margin-top: 2rem;
+  }
+
+  .forum-form {
+    padding: 1.25rem;
+    margin: 1rem 12px;
+  }
+
+  .form-group input[type="text"],
+  .form-group input[type="email"],
+  .form-group input[type="password"],
+  .form-group textarea,
+  .form-group select {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+
+  .read-more {
+    padding: 0.6rem 1.2rem;
+  }
+
+  .main-header {
+    flex-direction: column; /* Menu empilhado em telas pequenas */
+    padding: 0.75rem 0;
+  }
+
+  .forum-filters {
+    padding: 0.75rem;
+  }
+
+  .filter-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .filter-options a {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px; /* Maior legibilidade em telas muito pequenas */
+  }
+
+  .container {
+    padding: 0 10px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .post-grid, .thread-grid {
+    grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
+    gap: 0.75rem;
+  }
+
+  .post-card, .thread-card {
+    margin-bottom: 0.75rem;
+  }
+
+  .post-content, .card-content {
+    padding: 0.75rem;
+  }
+
+  .post-content h3, .card-title {
+    font-size: 1rem;
+  }
+
+  .single-post, .thread-post-main {
+    padding: 1rem;
+    margin: 0.75rem 8px;
+  }
+
+  .single-post h2, .thread-post-main h2 {
+    font-size: 1.5rem;
+  }
+
+  .post-image-full {
+    max-height: 250px;
+  }
+
+  .post-body {
+    font-size: 0.95rem;
+  }
+
+  .hero-post-image img {
+    height: 200px;
+  }
+
+  .hero-post-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .hero-post-content p {
+    font-size: 0.95rem;
+  }
+
+  .recent-posts-title {
+    font-size: 1.5rem;
+  }
+
+  .sidebar-widget {
+    padding: 1rem;
+  }
+
+  .sidebar-widget-title {
+    font-size: 1rem;
+  }
+
+  .recent-post-title {
+    font-size: 0.85rem;
+  }
+
+  .forum-form {
+    padding: 1rem;
+    margin: 0.75rem 8px;
+  }
+
+  .read-more {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .like-btn {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+  }
+
+  .category-badge {
+    padding: 3px 8px;
+    font-size: 0.75rem;
+  }
+}
+```
