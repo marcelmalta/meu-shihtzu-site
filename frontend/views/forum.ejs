@@ -22,7 +22,9 @@
         <% } %>
       </div>
 
+      <!-- Filtros -->
       <div class="forum-filters">
+        <!-- Categoria -->
         <div class="filter-section">
           <span class="filter-label">Categorias:</span>
           <div class="filter-options">
@@ -32,6 +34,8 @@
             <% }) %>
           </div>
         </div>
+
+        <!-- Ordenação -->
         <div class="filter-section">
           <span class="filter-label">Ordenar por:</span>
           <div class="filter-options">
@@ -41,30 +45,39 @@
         </div>
       </div>
 
-      <div class="search-form" style="margin: 2rem 0;">
+      <!-- Campo de busca -->
+      <div class="search-form" style="margin: 1.5rem 0;">
         <form action="/forum" method="GET">
-          <input type="text" name="q" placeholder="Pesquisar tópicos por título ou conteúdo..." value="<%= searchQuery %>" style="width: 100%; padding: 0.75rem; border-radius: 5px; border: 1px solid #ccc;">
-          <button type="submit" class="read-more" style="margin-top: 10px;">Pesquisar</button>
+          <input 
+            type="text" 
+            name="q" 
+            placeholder="Pesquisar tópicos por título ou conteúdo..." 
+            value="<%= searchQuery %>" 
+            style="width: 100%; padding: 0.75rem; border-radius: 5px; border: 1px solid #ccc;"
+          >
+          <button type="submit" class="read-more" style="margin-top: 10px; width: 100%;">Pesquisar</button>
         </form>
       </div>
+
       <hr>
 
+      <!-- Lista de Tópicos -->
       <div class="thread-grid">
         <% if (threads.length > 0) { %>
-           <% threads.forEach(thread => { %>
+          <% threads.forEach(thread => { %>
             <article class="thread-card">
               <a href="/forum/topico/<%= thread._id %>">
                 <div class="card-thumbnail">
                   <% if (thread.imageUrl) { %>
                     <img src="<%= thread.imageUrl %>" alt="<%= thread.title %>" class="card-thumbnail-img">
                   <% } else if (thread.youtubeVideoId) { %>
-                    <img src="https://www.youtube.com/watch?v=XopIwK_Sm646<%= thread.youtubeVideoId %>/mqdefault.jpg" alt="<%= thread.title %>" class="card-thumbnail-img">
+                    <img src="https://img.youtube.com/vi/<%= thread.youtubeVideoId %>/mqdefault.jpg" alt="<%= thread.title %>" class="card-thumbnail-img">
                   <% } else if (thread.category && thread.category.defaultImageUrl) { %>
                     <img src="<%= thread.category.defaultImageUrl %>" alt="<%= thread.category.name %>" class="card-thumbnail-img">
                   <% } %>
                 </div>
               </a>
-              
+
               <div class="card-content">
                 <a href="/forum/topico/<%= thread._id %>" style="text-decoration: none; color: inherit;">
                   <h3 class="card-title"><%= thread.title %></h3>
@@ -93,7 +106,7 @@
           <p>Nenhum tópico encontrado com os filtros selecionados.</p>
         <% } %>
       </div>
-      
+
     </div>
   </main>
 
