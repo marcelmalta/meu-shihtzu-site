@@ -121,7 +121,8 @@ app.post('/cadastro', async (req, res) => {
     user.verificationToken = token;
     user.verificationTokenExpires = Date.now() + 3600000;
     await user.save();
-    const verificationUrl = `http://localhost:${port}/verificar-email/${token}`;
+    const baseUrl = process.env.BASE_URL || `http://localhost:${port}`;
+    const verificationUrl = `${baseUrl}/verificar-email/${token}`;
     await transporter.sendMail({
         to: user.email,
         from: 'sgtmgamer@gmail.com',
@@ -230,7 +231,8 @@ app.post('/esqueci-senha', async (req, res) => {
             user.resetPasswordToken = token;
             user.resetPasswordExpires = Date.now() + 3600000;
             await user.save();
-            const resetUrl = `http://localhost:${port}/resetar-senha/${token}`;
+            const baseUrl = process.env.BASE_URL || `http://localhost:${port}`;
+            const resetUrl = `${baseUrl}/resetar-senha/${token}`;
             await transporter.sendMail({
                 to: user.email,
                 from: 'sgtmgamer@gmail.com',
