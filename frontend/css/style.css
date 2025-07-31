@@ -639,3 +639,27 @@ a:hover {
   aspect-ratio: 16 / 9; /* Mantém a proporção de vídeo (widescreen) */
   border-radius: var(--border-radius); /* Adiciona bordas arredondadas para combinar com o site */
 }
+
+@media (max-width: 600px) {
+  .post-grid {
+    grid-template-columns: 1fr; /* Força 1 coluna no mobile */
+  }
+
+  .hero-post-content {
+    padding: 1.2rem;
+  }
+
+  .hero-post-content h2 {
+    font-size: 1.6rem;
+  }
+
+  .hero-post-content p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-post-image img {
+    height: 220px;
+  }
+}
