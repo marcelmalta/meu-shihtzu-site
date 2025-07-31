@@ -625,3 +625,17 @@ a:hover {
     font-size: 0.85rem;
   }
 }
+
+/* =============================================== */
+/* --- AJUSTE RESPONSIVO PARA VÍDEOS --- */
+/* =============================================== */
+
+/* Esta regra aplica-se a qualquer vídeo (iframe) que esteja 
+  dentro do corpo de um post ou de uma resposta do fórum.
+*/
+.post-body iframe {
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9; /* Mantém a proporção de vídeo (widescreen) */
+  border-radius: var(--border-radius); /* Adiciona bordas arredondadas para combinar com o site */
+}
