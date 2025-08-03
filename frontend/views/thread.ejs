@@ -75,8 +75,8 @@
 
   <!-- Modal para resposta -->
   <div id="editor-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); z-index:10000; align-items:center; justify-content:center;">
-    <div style="background:#fff; border-radius:12px; max-width:96vw; width:500px; min-height:200px; padding:1rem; position:relative;">
-      <button id="close-editor-modal" style="position:absolute; top:8px; right:10px; font-size:1.3rem;">&times;</button>
+    <div style="background:#fff; border-radius:12px; max-width:98vw; width:500px; min-height:200px; padding:1rem; position:relative;">
+      <button id="close-editor-modal" style="position:absolute; top:8px; right:10px; font-size:1.6rem; z-index:10001;">&times;</button>
       <form id="reply-form-modal" action="/forum/topico/<%= thread._id %>/responder" method="POST">
         <textarea id="modal-reply-editor" name="content" rows="8" placeholder="Escreva sua resposta aqui..."></textarea>
         <button type="submit" class="read-more" style="width:100%; margin-top:1rem;">Enviar Resposta</button>
@@ -85,20 +85,21 @@
   </div>
 
   <script>
-    // Abrir modal e iniciar TinyMCE
+    // Abrir modal e iniciar TinyMCE com altura adaptativa
     function abrirEditorModal() {
       document.getElementById('editor-modal').style.display = 'flex';
       setTimeout(() => {
         if (window.tinymce) {
+          if (tinymce.get('modal-reply-editor')) tinymce.remove('#modal-reply-editor');
           tinymce.init({
             selector: '#modal-reply-editor',
             plugins: 'lists link image emoticons media table wordcount autoresize',
-            toolbar: 'undo redo | styles | bold italic | bullist numlist | link image | emoticons',
+            toolbar: 'undo redo | bold italic underline | bullist numlist | link image | emoticons',
             language: 'pt_BR',
             menubar: false,
             statusbar: false,
             autoresize_bottom_margin: 20,
-            height: 180,
+            height: window.innerWidth < 600 ? 220 : 180,
             content_css: '/css/style.css',
             body_class: 'post-body'
           });

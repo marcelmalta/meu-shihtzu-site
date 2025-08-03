@@ -25,8 +25,8 @@
 
   <!-- Modal para criar novo tópico -->
   <div id="modal-novo-topico" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); z-index:10000; align-items:center; justify-content:center;">
-    <div style="background:#fff; border-radius:12px; max-width:96vw; width:540px; min-height:220px; padding:1rem; position:relative;">
-      <button id="close-modal-novo-topico" style="position:absolute; top:8px; right:10px; font-size:1.3rem;">&times;</button>
+    <div style="background:#fff; border-radius:12px; max-width:98vw; width:540px; min-height:220px; padding:1rem; position:relative;">
+      <button id="close-modal-novo-topico" style="position:absolute; top:8px; right:10px; font-size:1.6rem; z-index:10001;">&times;</button>
       <form id="thread-form-modal" action="/forum/novo-topico" method="POST" class="forum-form">
         <div class="form-group">
           <label for="category">Categoria</label>
@@ -55,15 +55,16 @@
       document.getElementById('modal-novo-topico').style.display = 'flex';
       setTimeout(() => {
         if (window.tinymce) {
+          if (tinymce.get('modal-thread-editor')) tinymce.remove('#modal-thread-editor');
           tinymce.init({
             selector: '#modal-thread-editor',
             plugins: 'lists link image emoticons media table wordcount autoresize',
-            toolbar: 'undo redo | styles | bold italic | bullist numlist | link image | emoticons',
+            toolbar: 'undo redo | bold italic underline | bullist numlist | link image | emoticons',
             language: 'pt_BR',
             menubar: false,
             statusbar: false,
             autoresize_bottom_margin: 20,
-            height: 200,
+            height: window.innerWidth < 600 ? 220 : 200,
             content_css: '/css/style.css',
             body_class: 'post-body'
           });
@@ -79,7 +80,7 @@
         tinymce.triggerSave();
         let content = document.getElementById('modal-thread-editor').value;
         if (!content.trim()) {
-          alert('O campo "Conteúdo" não pode ficar vazio.');
+          alert('O campo \"Conteúdo\" não pode ficar vazio.');
           e.preventDefault();
           return false;
         }
