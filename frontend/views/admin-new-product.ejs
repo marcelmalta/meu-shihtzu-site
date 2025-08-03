@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Adicionar Produto</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <h1>Novo Produto</h1>
+  <form action="/admin/produtos/novo" method="POST">
+    <label>Nome:</label>
+    <input type="text" name="nome" required>
+    <br>
+    <label>Descrição:</label>
+    <textarea name="descricao"></textarea>
+    <br>
+    <label>Preço:</label>
+    <input type="number" name="preco" step="0.01" required>
+    <br>
+    <label>Imagens (URL, separadas por vírgula):</label>
+    <input type="text" name="imagens">
+    <br>
+    <label>Estoque:</label>
+    <input type="number" name="estoque" min="0">
+    <br>
+    <button type="submit">Cadastrar Produto</button>
+  </form>
+  <a href="/admin/produtos">Voltar</a>
+</body>
+</html>

@@ -1,6 +1,18 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+const EnderecoSchema = new mongoose.Schema({
+  rua: String,
+  numero: String,
+  complemento: String,
+  bairro: String,
+  cidade: String,
+  estado: String,
+  cep: String,
+  pais: { type: String, default: 'Brasil' },
+  principal: { type: Boolean, default: false }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -8,11 +20,9 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     minlength: [3, 'O nome de usuário deve ter no mínimo 3 caracteres.'],
-    maxlength: [25, 'O nome de usuário deve ter no máximo 25 caracteres.'], // Aumentei um pouco o limite
-    // --- REGRA DE VALIDAÇÃO MODIFICADA ---
+    maxlength: [25, 'O nome de usuário deve ter no máximo 25 caracteres.'],
     validate: {
       validator: function(v) {
-        // Esta expressão regular agora permite letras (incluindo com acentos), números, underscores e espaços.
         return /^[a-zA-ZÀ-ÿ0-9_ ]+$/.test(v);
       },
       message: 'O nome de usuário só pode conter letras, números, espaços e underscores (_).'
@@ -39,21 +49,30 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  verificationToken: {
-    type: String
+  verificationToken: String,
+  verificationTokenExpires: Date,
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
+
+  // Campos de e-commerce
+  telefone: {
+    type: String,
+    trim: true
   },
-  verificationTokenExpires: {
-    type: Date
+  cpf: {
+    type: String,
+    trim: true
   },
-  resetPasswordToken: {
-      type: String
-  },
-  resetPasswordExpires: {
-      type: Date
+  dataNascimento: Date,
+  enderecos: [EnderecoSchema],
+
+  criadoEm: {
+    type: Date,
+    default: Date.now
   }
 });
 
-// --- HASHING DA SENHA (continua igual) ---
+// --- HASHING DA SENHA ---
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
     return next();

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel de Produtos</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="main-header">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;">
+      <h1>Painel de Produtos</h1>
+      <a href="/admin/produtos/novo" class="read-more" style="font-size:1rem;">+ Adicionar Produto</a>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 2rem 0;">
+    <div class="post-grid">
+      <% if (produtos.length === 0) { %>
+        <p style="text-align:center; grid-column: 1 / -1;">Nenhum produto cadastrado.</p>
+      <% } else { %>
+        <% produtos.forEach(produto => { %>
+          <div class="post-card">
+            <div class="card-thumbnail">
+              <% if (produto.imagens && produto.imagens[0]) { %>
+                <img src="<%= produto.imagens[0] %>" class="card-thumbnail-img" alt="Imagem do produto">
+              <% } else { %>
+                <div class="card-thumbnail-img" style="background:#eee; display:flex;align-items:center;justify-content:center;color:#bbb;font-size:2rem;height:100%;">Sem imagem</div>
+              <% } %>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title"><%= produto.nome %></h3>
+              <p class="card-meta" style="margin-bottom: 1rem;"><%= produto.descricao %></p>
+              <div class="card-meta"><strong>R$ <%= produto.preco ? produto.preco.toFixed(2) : "0.00" %></strong></div>
+              <div class="card-meta">Estoque: <%= produto.estoque %></div>
+              <!-- Futuramente: editar/remover aqui -->
+            </div>
+          </div>
+        <% }); %>
+      <% } %>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    &copy; <%= new Date().getFullYear() %> Painel Admin
+  </footer>
+</body>
+</html>

@@ -18,6 +18,7 @@ const ForumReply = require('./models/ForumReply.js');
 const User = require('./models/User.js');
 const Comment = require('./models/Comment.js');
 const Category = require('./models/Category.js');
+const Product = require('./models/Product.js'); // Adicionado
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,6 +26,7 @@ const port = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
 
 // --- Middlewares e Configurações ---
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -44,7 +46,6 @@ app.use((req, res, next) => {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'frontend', 'views'));
 
-
 // --- CONFIGURAÇÃO DO MULTER ---
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -56,14 +57,13 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-
 // --- CONFIGURAÇÃO DO NODEMAILER ---
 const transporter = nodemailer.createTransport({
-    host: "smtp.sendgrid.net",
+    host: "smtp.hostinger.com",
     port: 587,
     auth: {
-      user: "apikey",
-      pass: process.env.SENDGRID_API_KEY
+      user: process.env.EMAIL_USER,   // e-mail completo
+      pass: process.env.EMAIL_PASS    // senha do e-mail (não use mais a variável SENDGRID)
     }
 });
 
@@ -71,7 +71,6 @@ const transporter = nodemailer.createTransport({
 const profanity = new Profanity({
     language: anENandPTsubset
 });
-
 
 // --- MIDDLEWARE: O "Guarda" do Admin ---
 const isAdmin = (req, res, next) => {
@@ -93,6 +92,53 @@ function extractYouTubeId(text) {
   return match ? match[1] : null;
 }
 
+// --- IMPORTAÇÃO DAS ROTAS REST API ---
+const productApiRoutes = require('./routes/api/products');
+const orderApiRoutes = require('./routes/api/orders');
+const userApiRoutes = require('./routes/api/users');
+
+// --- USANDO AS ROTAS DA API (prefixo /api/...) ---
+app.use('/api/products', productApiRoutes);
+app.use('/api/orders', orderApiRoutes);
+app.use('/api/users', userApiRoutes);
+
+// ===================================
+// --- ROTAS DE PRODUTOS E-COMMERCE ---
+// ===================================
+
+app.get('/produtos', async (req, res) => {
+  try {
+    const produtos = await Product.find();
+    res.render('products', { produtos });
+  } catch (err) {
+    res.status(500).send('Erro ao carregar os produtos.');
+  }
+});
+
+app.get('/admin/produtos', isAdmin, async (req, res) => {
+  try {
+    const produtos = await Product.find();
+    res.render('admin-products', { produtos });
+  } catch (err) {
+    res.status(500).send('Erro ao carregar os produtos do admin.');
+  }
+});
+
+app.get('/admin/produtos/novo', isAdmin, (req, res) => {
+  res.render('admin-new-product');
+});
+
+app.post('/admin/produtos/novo', isAdmin, async (req, res) => {
+  try {
+    const { nome, descricao, preco, imagens, estoque } = req.body;
+    const listaImagens = imagens ? imagens.split(',').map(url => url.trim()) : [];
+    const novoProduto = new Product({ nome, descricao, preco, imagens: listaImagens, estoque });
+    await novoProduto.save();
+    res.redirect('/admin/produtos');
+  } catch (err) {
+    res.status(500).send('Erro ao criar produto.');
+  }
+});
 
 // ===================================
 // --- ROTAS DE AUTENTICAÇÃO E USUÁRIO ---
@@ -125,7 +171,7 @@ app.post('/cadastro', async (req, res) => {
     const verificationUrl = `${baseUrl}/verificar-email/${token}`;
     await transporter.sendMail({
         to: user.email,
-        from: 'sgtmgamer@gmail.com',
+        from: 'admin@shihtzuz.com',
         subject: 'Confirme o seu Registo no Shih Tzu Notícias',
         html: `<h1>Bem-vindo!</h1><p>Por favor, clique no link a seguir para confirmar o seu e-mail: <a href="${verificationUrl}">${verificationUrl}</a></p>`
     });
@@ -235,7 +281,7 @@ app.post('/esqueci-senha', async (req, res) => {
             const resetUrl = `${baseUrl}/resetar-senha/${token}`;
             await transporter.sendMail({
                 to: user.email,
-                from: 'sgtmgamer@gmail.com',
+                from: 'admin@shihtzuz.com',
                 subject: 'Recuperação de Senha - Shih Tzu Notícias',
                 html: `<h1>Recuperação de Senha</h1><p>Você solicitou a recuperação de senha. Por favor, clique no link a seguir para criar uma nova senha: <a href="${resetUrl}">${resetUrl}</a></p><p>Se você não solicitou isso, por favor, ignore este e-mail.</p>`
             });
@@ -383,7 +429,6 @@ app.post('/admin/forum/rejeitar/:id', isAdmin, async (req, res) => {
   }
 });
 
-
 // ===================================
 // --- ROTAS PÚBLICAS (Posts e Comentários) ----
 // ===================================
@@ -476,25 +521,16 @@ app.post('/comentario/:id/curtir', async (req, res) => {
   }
 });
 
-
 // ===============================
 // --- ROTAS DO FÓRUM ---
 // ===============================
 
-// --- ROTA PRINCIPAL DO FÓRUM (MODIFICADA) ---
 app.get('/forum', async (req, res) => {
   try {
-    // 1. Obter todos os parâmetros da URL
     const { category: categorySlug, sort = 'recent', q: searchQuery } = req.query;
-
-    // 2. Obter todas as categorias para a barra de filtros
     const categories = await Category.find().sort({ name: 1 });
-
-    // 3. Construir a query de busca no MongoDB
     const matchQuery = { status: 'approved' };
     let pageTitle = 'Tópicos do Fórum';
-
-    // Adicionar filtro de categoria se existir
     if (categorySlug) {
       const category = await Category.findOne({ slug: categorySlug });
       if (category) {
@@ -502,8 +538,6 @@ app.get('/forum', async (req, res) => {
         pageTitle = `Tópicos em: ${category.name}`;
       }
     }
-
-    // Adicionar filtro de pesquisa se existir
     if (searchQuery) {
         matchQuery.$or = [
             { title: { $regex: searchQuery, $options: 'i' } },
@@ -511,11 +545,7 @@ app.get('/forum', async (req, res) => {
         ];
         pageTitle = `Resultados da busca por: "${searchQuery}"`;
     }
-
-    // 4. Definir a ordenação
     const sortQuery = sort === 'popular' ? { replyCount: -1 } : { createdAt: -1 };
-
-    // 5. Usar Aggregation para buscar e contar
     let threads = await ForumThread.aggregate([
       { $match: matchQuery },
       {
@@ -544,8 +574,6 @@ app.get('/forum', async (req, res) => {
         $unwind: '$category'
       }
     ]);
-    
-    // 6. Renderizar a página com todos os dados
     res.render('forum', {
       threads,
       categories,
@@ -554,18 +582,11 @@ app.get('/forum', async (req, res) => {
       currentSort: sort,
       searchQuery: searchQuery || ''
     });
-
   } catch (error) {
     console.log(error);
     res.status(500).send('Erro ao carregar o fórum.');
   }
 });
-
-
-// As rotas antigas de categoria e pesquisa são agora tratadas pela rota /forum
-// app.get('/forum/categoria/:slug', ...);
-// app.get('/forum/pesquisa', ...);
-
 
 app.get('/forum/novo-topico', async (req, res) => {
   if (!req.session.user) { return res.redirect('/login'); }
@@ -660,7 +681,6 @@ app.post('/forum/resposta/:id/excluir', isAdmin, async (req, res) => {
     res.status(500).send('Erro ao excluir a resposta.');
   }
 });
-
 
 // --- FUNÇÃO PARA INICIAR O SERVIDOR ---
 async function startServer() {
