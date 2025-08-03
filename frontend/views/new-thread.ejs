@@ -9,6 +9,27 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tiny.cloud/1/6j8mcpiz9296bqj68k211s1zjnz3bbunjit9dr6xzzcrru7h/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+  <style>
+    @media (max-width: 600px) {
+      #modal-novo-topico > div {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        padding: 0.5rem !important;
+        box-sizing: border-box;
+      }
+      .tox.tox-tinymce {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+      }
+      .tox .tox-toolbar-overlord,
+      .tox .tox-toolbar__primary {
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -25,7 +46,7 @@
 
   <!-- Modal para criar novo tópico -->
   <div id="modal-novo-topico" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); z-index:10000; align-items:center; justify-content:center;">
-    <div style="background:#fff; border-radius:12px; max-width:98vw; width:540px; min-height:220px; padding:1rem; position:relative;">
+    <div style="background:#fff; border-radius:12px; max-width:100vw; width:540px; min-height:220px; padding:1rem; position:relative;">
       <button id="close-modal-novo-topico" style="position:absolute; top:8px; right:10px; font-size:1.6rem; z-index:10001;">&times;</button>
       <form id="thread-form-modal" action="/forum/novo-topico" method="POST" class="forum-form">
         <div class="form-group">
@@ -59,14 +80,24 @@
           tinymce.init({
             selector: '#modal-thread-editor',
             plugins: 'lists link image emoticons media table wordcount autoresize',
-            toolbar: 'undo redo | bold italic underline | bullist numlist | link image | emoticons',
+            toolbar: window.innerWidth < 600
+              ? 'bold italic underline | bullist numlist | link image | emoticons'
+              : 'undo redo | bold italic underline | bullist numlist | link image | emoticons',
             language: 'pt_BR',
             menubar: false,
             statusbar: false,
             autoresize_bottom_margin: 20,
+            toolbar_mode: 'sliding',
             height: window.innerWidth < 600 ? 220 : 200,
             content_css: '/css/style.css',
-            body_class: 'post-body'
+            body_class: 'post-body',
+            setup: function(editor) {
+              editor.on('init', function() {
+                setTimeout(() => {
+                  editor.focus();
+                }, 100);
+              });
+            }
           });
         }
       }, 100);
