@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  
   <script src="https://cdn.tiny.cloud/1/6j8mcpiz9296bqj68k211s1zjnz3bbunjit9dr6xzzcrru7h/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>
@@ -18,8 +17,17 @@
   <main class="main-content">
     <div class="container">
       <h2>Criar Novo Tópico</h2>
-      <form id="thread-form" action="/forum/novo-topico" method="POST" class="forum-form">
-        
+      <button type="button" class="read-more" style="margin-bottom:2rem;" onclick="abrirModalNovoTopico()">Abrir Editor de Tópico</button>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+
+  <!-- Modal para criar novo tópico -->
+  <div id="modal-novo-topico" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); z-index:10000; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:12px; max-width:96vw; width:540px; min-height:220px; padding:1rem; position:relative;">
+      <button id="close-modal-novo-topico" style="position:absolute; top:8px; right:10px; font-size:1.3rem;">&times;</button>
+      <form id="thread-form-modal" action="/forum/novo-topico" method="POST" class="forum-form">
         <div class="form-group">
           <label for="category">Categoria</label>
           <select name="category" id="category" required>
@@ -29,46 +37,54 @@
             <% }) %>
           </select>
         </div>
-        
         <div class="form-group">
            <label for="title">Título</label>
            <input type="text" id="title" name="title" required>
         </div>
         <div class="form-group">
           <label for="content">Conteúdo</label>
-          <textarea id="thread-editor" name="content" rows="8"></textarea>
+          <textarea id="modal-thread-editor" name="content" rows="8"></textarea>
         </div>
-
         <button type="submit" class="read-more">Publicar Tópico</button>
       </form>
     </div>
-  </main>
-
-  <%- include('partials/footer') %>
+  </div>
 
   <script>
-    tinymce.init({
-      selector: '#thread-editor',
-      plugins: 'lists link image emoticons media table wordcount autoresize',
-      toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | emoticons',
-      language: 'pt_BR',
-      menubar: false,
-      statusbar: false,
-      autoresize_bottom_margin: 20,
-      content_css: '/css/style.css',
-      body_class: 'post-body'
-    });
-
-    const threadForm = document.getElementById('thread-form');
-    threadForm.addEventListener('submit', function(event) {
-      tinymce.triggerSave();
-      
-      const content = document.getElementById('thread-editor').value;
-      if (content.trim() === '') {
-        alert('O campo "Conteúdo" não pode ficar vazio.');
-        event.preventDefault();
+    function abrirModalNovoTopico() {
+      document.getElementById('modal-novo-topico').style.display = 'flex';
+      setTimeout(() => {
+        if (window.tinymce) {
+          tinymce.init({
+            selector: '#modal-thread-editor',
+            plugins: 'lists link image emoticons media table wordcount autoresize',
+            toolbar: 'undo redo | styles | bold italic | bullist numlist | link image | emoticons',
+            language: 'pt_BR',
+            menubar: false,
+            statusbar: false,
+            autoresize_bottom_margin: 20,
+            height: 200,
+            content_css: '/css/style.css',
+            body_class: 'post-body'
+          });
+        }
+      }, 100);
+    }
+    document.getElementById('close-modal-novo-topico').onclick = function() {
+      document.getElementById('modal-novo-topico').style.display = 'none';
+      if (window.tinymce) tinymce.remove('#modal-thread-editor');
+    }
+    document.getElementById('thread-form-modal').onsubmit = function(e) {
+      if (window.tinymce && tinymce.get('modal-thread-editor')) {
+        tinymce.triggerSave();
+        let content = document.getElementById('modal-thread-editor').value;
+        if (!content.trim()) {
+          alert('O campo "Conteúdo" não pode ficar vazio.');
+          e.preventDefault();
+          return false;
+        }
       }
-    });
+    }
   </script>
 
 </body>
