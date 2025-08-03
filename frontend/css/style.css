@@ -723,3 +723,87 @@ button {
   aspect-ratio: 16 / 9; /* Mantém a proporção de vídeo (widescreen) */
   border-radius: var(--border-radius); /* Adiciona bordas arredondadas para combinar com o site */
 }
+
+/* =============================================== */
+/* --- AJUSTE RESPONSIVO PARA VÍDEOS --- */
+/* =============================================== */
+
+/* Esta regra aplica-se a qualquer vídeo (iframe) que esteja 
+  dentro do corpo de um post ou de uma resposta do fórum.
+*/
+.post-body iframe {
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9; /* Mantém a proporção de vídeo (widescreen) */
+  border-radius: var(--border-radius); /* Adiciona bordas arredondadas para combinar com o site */
+}
+
+/* =============================================== */
+/* --- MELHORIAS PARA FORMULÁRIO DE FÓRUM EM MOBILE --- */
+/* =============================================== */
+
+@media (max-width: 600px) {
+  .forum-form {
+    padding: 1rem !important;
+    max-width: 100% !important;
+    margin: 1rem 0 !important;
+  }
+  .forum-form textarea,
+  .forum-form input[type="text"],
+  .forum-form input[type="email"],
+  .forum-form input[type="password"] {
+    font-size: 1rem;
+    padding: 0.6rem !important;
+    min-height: 60px !important;
+    max-width: 100% !important;
+  }
+  .forum-form textarea {
+    min-height: 80px !important;
+    max-height: 180px !important;
+    resize: vertical;
+  }
+}
+
+@media (max-width: 600px) {
+  .comments-section,
+  .replies-list {
+    margin-top: 1.2rem;
+  }
+  .reply-item {
+    padding: 0.7rem 0.9rem !important;
+    margin-bottom: 0.5rem !important;
+    border-radius: 7px;
+    font-size: 0.97rem;
+    line-height: 1.4;
+    box-shadow: none !important;
+    border: 1px solid #eee;
+    background: #fff;
+  }
+  .reply-item .like-btn,
+  .reply-item button {
+    font-size: 0.92rem;
+    padding: 0.18rem 0.55rem;
+    border-radius: 14px;
+  }
+  /* Caso use avatar em cada comentário: */
+  .reply-item .avatar,
+  .reply-item img.avatar {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    margin-right: 0.7rem;
+  }
+  /* Espaço entre nome e comentário */
+  .reply-item .author,
+  .reply-item .user-name {
+    font-size: 0.98rem;
+    font-weight: 600;
+  }
+  .reply-item .timestamp,
+  .reply-item .data {
+    font-size: 0.87rem;
+    color: #aaa;
+    margin-left: 0.5rem;
+  }
+}
