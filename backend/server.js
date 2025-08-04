@@ -48,7 +48,7 @@ app.use('/api/users', userApiRoutes);
 // Rotas da aplicação
 app.use(authRoutes);
 app.use(postRoutes);
-app.use(forumRoutes);
+app.use('/forum', forumRoutes); // <<<<< AGORA COM PREFIXO!
 app.use(productRoutes);
 
 // Iniciar servidor
