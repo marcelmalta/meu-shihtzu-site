@@ -18,11 +18,13 @@ const commentSchema = new mongoose.Schema({
   post: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Post',
-    required: true
+    required: false // Agora pode ser opcional!
   },
-  // --- CAMPO ADICIONADO ---
-  // Guardamos um array com os IDs dos usuários que curtiram.
-  // O número de curtidas será o tamanho deste array.
+  thread: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ForumThread',
+    required: false // Novo campo, opcional!
+  },
   likes: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'

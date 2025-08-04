@@ -8,28 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tiny.cloud/1/6j8mcpiz9296bqj68k211s1zjnz3bbunjit9dr6xzzcrru7h/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-  <style>
-    @media (max-width: 600px) {
-      #editor-modal > div {
-        width: 100vw !important;
-        max-width: 100vw !important;
-        min-width: 0 !important;
-        padding: 0.5rem !important;
-        box-sizing: border-box;
-      }
-      .tox.tox-tinymce {
-        width: 100vw !important;
-        max-width: 100vw !important;
-        min-width: 0 !important;
-      }
-      .tox .tox-toolbar-overlord,
-      .tox .tox-toolbar__primary {
-        overflow-x: auto !important;
-        flex-wrap: nowrap !important;
-      }
-    }
-  </style>
 </head>
 <body>
 
@@ -60,100 +38,53 @@
       
       <hr style="margin: 2rem 0;">
 
-      <h3 style="margin-bottom: 1rem;">Respostas</h3>
-      <div class="replies-list">
-        <% if (replies.length > 0) { %>
-          <% replies.forEach(reply => { %>
-            <div class="reply-item" style="display: flex; align-items: center;">
-              <div style="flex-grow: 1;">
-                <p class="post-meta">Por <%= reply.author %> em <%= reply.createdAt.toLocaleDateString('pt-BR') %></p>
-                <div class="post-body"><%- reply.content %></div>
+      <h3 class="recent-posts-title" style="margin-bottom: 1rem;">Comentários</h3>
+      <div id="comments-section">
+        <% if (comments.length === 0) { %>
+          <p>Seja o primeiro a comentar!</p>
+        <% } else { %>
+          <% comments.forEach(comment => { %>
+            <div class="comment-card">
+              <div class="comment-meta">
+                <span><strong><%= comment.authorName %></strong></span>
+                <span><%= comment.createdAt.toLocaleDateString('pt-BR') %></span>
               </div>
-              <% if (currentUser && currentUser.role === 'admin') { %>
-                <form action="/forum/resposta/<%= reply._id %>/excluir" method="POST" style="margin-left: auto;">
-                   <button type="submit" class="delete-btn" onclick="return confirm('Tem certeza que deseja excluir esta resposta?');">Excluir Resposta</button>
+              <div class="comment-content"><%- comment.content %></div>
+              <div style="margin-top: 0.5rem;">
+                <form action="/forum/topico/<%= thread._id %>/comentar/<%= comment._id %>/curtir" method="POST" style="display:inline;">
+                  <button type="submit" class="like-btn">
+                    ❤️ <%= comment.likes.length %>
+                    <% if (currentUser && comment.likes.some(u => u.toString() === currentUser.id)) { %> (você curtiu) <% } %>
+                  </button>
                 </form>
-              <% } %>
+                <% if (currentUser && currentUser.role === 'admin') { %>
+                  <form action="/forum/comentario/<%= comment._id %>/excluir" method="POST" style="display:inline;">
+                    <button type="submit" class="delete-btn">Excluir</button>
+                  </form>
+                <% } %>
+              </div>
             </div>
           <% }) %>
-        <% } else { %>
-          <p>Nenhuma resposta ainda. Seja o primeiro a responder!</p>
         <% } %>
       </div>
 
       <% if (currentUser) { %>
         <div class="reply-form" style="margin-top: 2rem;">
           <hr style="margin-bottom: 2rem;">
-          <h3>Deixe uma resposta</h3>
-          <button type="button" class="read-more" style="width:100%;" onclick="abrirEditorModal()">Responder</button>
+          <h3>Deixe um comentário</h3>
+          <form action="/forum/topico/<%= thread._id %>/comentar" method="POST" class="forum-form" style="max-width: 500px;">
+            <textarea name="content" rows="5" placeholder="Escreva seu comentário aqui..." required></textarea>
+            <button type="submit" class="read-more" style="width:100%; margin-top:1rem;">Comentar</button>
+          </form>
         </div>
+      <% } else { %>
+        <p style="margin-top:2rem;"><a href="/login">Faça login</a> para comentar.</p>
       <% } %>
 
     </div>
   </main>
 
   <%- include('partials/footer') %>
-
-  <!-- Modal para resposta -->
-  <div id="editor-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); z-index:10000; align-items:center; justify-content:center;">
-    <div style="background:#fff; border-radius:12px; max-width:100vw; width:500px; min-height:200px; padding:1rem; position:relative;">
-      <button id="close-editor-modal" style="position:absolute; top:8px; right:10px; font-size:1.6rem; z-index:10001;">&times;</button>
-      <form id="reply-form-modal" action="/forum/topico/<%= thread._id %>/responder" method="POST">
-        <textarea id="modal-reply-editor" name="content" rows="8" placeholder="Escreva sua resposta aqui..."></textarea>
-        <button type="submit" class="read-more" style="width:100%; margin-top:1rem;">Enviar Resposta</button>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    function abrirEditorModal() {
-      document.getElementById('editor-modal').style.display = 'flex';
-      setTimeout(() => {
-        if (window.tinymce) {
-          if (tinymce.get('modal-reply-editor')) tinymce.remove('#modal-reply-editor');
-          tinymce.init({
-            selector: '#modal-reply-editor',
-            plugins: 'lists link image emoticons media table wordcount autoresize',
-            toolbar: window.innerWidth < 600
-              ? 'bold italic underline | bullist numlist | link image | emoticons'
-              : 'undo redo | bold italic underline | bullist numlist | link image | emoticons',
-            language: 'pt_BR',
-            menubar: false,
-            statusbar: false,
-            autoresize_bottom_margin: 20,
-            toolbar_mode: 'sliding',
-            height: window.innerWidth < 600 ? 220 : 180,
-            content_css: '/css/style.css',
-            body_class: 'post-body',
-            setup: function(editor) {
-              editor.on('init', function() {
-                setTimeout(() => {
-                  editor.focus();
-                }, 100);
-              });
-            }
-          });
-        }
-      }, 100);
-    }
-    // Fechar modal e destruir editor
-    document.getElementById('close-editor-modal').onclick = function() {
-      document.getElementById('editor-modal').style.display = 'none';
-      if (window.tinymce) tinymce.remove('#modal-reply-editor');
-    }
-    // Validação e envio
-    document.getElementById('reply-form-modal').onsubmit = function(e) {
-      if (window.tinymce && tinymce.get('modal-reply-editor')) {
-        tinymce.triggerSave();
-        let content = document.getElementById('modal-reply-editor').value;
-        if (!content.trim()) {
-          alert('O campo de resposta não pode ficar vazio.');
-          e.preventDefault();
-          return false;
-        }
-      }
-    }
-  </script>
 
 </body>
 </html>
