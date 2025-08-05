@@ -100,33 +100,35 @@ exports.renderLogin = (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    // Procura usuário pelo email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).render('error', {
-        errorMessage: 'O e-mail ou a senha estão incorretos.',
-        backLink: '/login'
+      return res.status(400).render('login', {
+        errorMessage: 'E-mail ou senha incorretos.'
       });
     }
-    if (!user.isVerified) {
-      return res.status(400).render('error', {
-        errorMessage: 'A sua conta ainda não foi verificada. Por favor, verifique o seu e-mail.',
-        backLink: '/login'
-      });
-    }
+
+    // Compara senha
     const isMatch = await bcrypt.compare(password, user.password);
-    if (isMatch) {
-      req.session.user = { id: user._id.toString(), username: user.username, role: user.role };
-      res.redirect('/');
-    } else {
-      res.status(400).render('error', {
-        errorMessage: 'O e-mail ou a senha estão incorretos.',
-        backLink: '/login'
+    if (!isMatch) {
+      return res.status(400).render('login', {
+        errorMessage: 'E-mail ou senha incorretos.'
       });
     }
+
+    // Salva dados mínimos na sessão
+    req.session.user = {
+      id: user._id.toString(),
+      username: user.username,
+      role: user.role
+    };
+
+    // Redireciona para a home
+    res.redirect('/');
   } catch (error) {
-    res.status(500).render('error', {
-      errorMessage: 'Ocorreu um erro ao fazer o login.',
-      backLink: '/login'
+    console.error(error);
+    res.status(500).render('login', {
+      errorMessage: 'Erro ao fazer login. Tente novamente.'
     });
   }
 };
