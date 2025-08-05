@@ -20,8 +20,6 @@ router.post('/login', async (req, res) => {
     if (user.password !== password) {
       return res.render('login', { error: 'Senha incorreta.' });
     }
-
-    // Salva o usuário na sessão
     req.session.user = { id: user._id.toString(), username: user.username, role: user.role };
     return res.redirect('/');
   } catch (error) {
@@ -42,7 +40,6 @@ router.post('/cadastro', async (req, res) => {
     if (existingUser) {
       return res.render('register', { error: 'E-mail já cadastrado.' });
     }
-    // Cria o novo usuário (adapte para validação e senha hash se desejar)
     const user = new User({ username, email, password });
     await user.save();
     req.session.user = { id: user._id.toString(), username: user.username, role: user.role };
@@ -57,6 +54,32 @@ router.get('/sair', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/');
   });
+});
+
+// =======================
+// Esqueci/Resetar Senha
+// =======================
+
+// GET /esqueci-senha
+router.get('/esqueci-senha', (req, res) => {
+  res.render('forgot-password'); // precisa do arquivo frontend/views/forgot-password.ejs
+});
+
+// POST /esqueci-senha
+router.post('/esqueci-senha', async (req, res) => {
+  // Aqui apenas simula envio
+  res.render('forgot-password', { message: "Se este e-mail existir, você receberá instruções." });
+});
+
+// GET /resetar-senha/:token
+router.get('/resetar-senha/:token', (req, res) => {
+  res.render('reset-password', { token: req.params.token });
+});
+
+// POST /resetar-senha/:token
+router.post('/resetar-senha/:token', async (req, res) => {
+  // Aqui apenas simula reset
+  res.redirect('/login');
 });
 
 module.exports = router;
