@@ -32,7 +32,7 @@
             <h3>Comentários</h3>
     
             <% if (currentUser) { %>
-              <div class="reply-form">
+              <div class="comment-form">
                 <form action="/post/<%= post.slug %>/comentar" method="POST">
                   <div class="form-group">
                     <textarea name="content" rows="4" required placeholder="Escreva seu comentário..."></textarea>
@@ -47,7 +47,7 @@
             <div class="replies-list" style="margin-top: 2rem;">
               <% if (comments && comments.length > 0) { %>
                 <% comments.forEach(comment => { %>
-                  <div class="reply-item">
+                  <div class="comment-item">
                     <div style="flex-grow: 1;">
                       <p class="post-meta">Por <strong><%= comment.authorName %></strong> em <%= comment.createdAt.toLocaleDateString('pt-BR') %></p>
                       <p><%= comment.content %></p>
