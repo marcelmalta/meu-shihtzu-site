@@ -6,12 +6,9 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 
-// Rotas de API (REST)
 const productApiRoutes = require('./routes/api/products');
 const orderApiRoutes = require('./routes/api/orders');
 const userApiRoutes = require('./routes/api/users');
-
-// Rotas de aplicação (EJS)
 const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
 const forumRoutes = require('./routes/forumRoutes');
@@ -20,45 +17,57 @@ const productRoutes = require('./routes/productRoutes');
 const app = express();
 const port = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
+const SESSION_SECRET = process.env.SESSION_SECRET;
 
-// Middlewares e Configurações
+// Checa se as variáveis de ambiente existem
+if (!MONGO_URI) {
+  console.error('❌ MONGO_URI não definida no .env');
+  process.exit(1);
+}
+if (!SESSION_SECRET) {
+  console.error('❌ SESSION_SECRET não definida no .env');
+  process.exit(1);
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Corrige o caminho do static, se necessário
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Sessão
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl: MONGO_URI })
+  store: MongoStore.create({ mongoUrl: MONGO_URI }),
+  cookie: { secure: false } // Se for HTTPS, mude para true!
 }));
 
 app.use((req, res, next) => {
-  res.locals.currentUser = req.session.user;
+  res.locals.currentUser = req.session.user || null;
   next();
 });
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'frontend', 'views'));
 
-// Rotas da API (REST)
+// Rotas da API
 app.use('/api/products', productApiRoutes);
 app.use('/api/orders', orderApiRoutes);
 app.use('/api/users', userApiRoutes);
 
-// Rotas da aplicação (EJS)
-app.use(authRoutes);          // login, logout, cadastro
-app.use(postRoutes);          // notícias, página inicial
+// Rotas da aplicação
+app.use(authRoutes);
+app.use(postRoutes);
 app.use('/forum', forumRoutes);
-app.use(productRoutes);       // produtos e admin-produtos
+app.use(productRoutes);
 
-// Rota HOME fallback para evitar "Cannot GET /"
 app.get('/', (req, res) => {
-  res.redirect('/noticias'); // ou ajuste para sua rota inicial correta, ex: 'index', '/posts', etc
+  res.redirect('/noticias'); // ajuste conforme sua homepage real
 });
 
-// Iniciar servidor
 async function startServer() {
   try {
     await mongoose.connect(MONGO_URI);
