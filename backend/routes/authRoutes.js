@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcrypt');
 const User = require('../models/User');
 
 // LOGIN
@@ -14,11 +15,13 @@ router.post('/login', async (req, res) => {
     if (!user) {
       return res.render('login', { error: 'Usuário não encontrado.' });
     }
-    if (user.password !== password) {
+    // Aqui compara a senha digitada com o hash do banco
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
       return res.render('login', { error: 'Senha incorreta.' });
     }
     req.session.user = { id: user._id.toString(), username: user.username, role: user.role };
-    return res.redirect('/noticias'); // ou '/' ou onde for sua homepage
+    return res.redirect('/noticias'); // Ou '/' conforme sua homepage
   } catch (error) {
     return res.render('login', { error: 'Erro ao tentar logar.' });
   }
@@ -36,7 +39,9 @@ router.post('/cadastro', async (req, res) => {
     if (existingUser) {
       return res.render('register', { error: 'E-mail já cadastrado.' });
     }
-    const user = new User({ username, email, password });
+    // Gera o hash da senha antes de salvar
+    const hash = await bcrypt.hash(password, 12);
+    const user = new User({ username, email, password: hash });
     await user.save();
     req.session.user = { id: user._id.toString(), username: user.username, role: user.role };
     return res.redirect('/noticias');
