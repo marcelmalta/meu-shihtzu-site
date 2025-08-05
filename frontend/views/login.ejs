@@ -16,6 +16,13 @@
   <main class="main-content">
     <div class="container">
       <h2>Entrar na sua Conta</h2>
+
+      <% if (error) { %>
+        <div class="error-message" style="color: #fff; background: #d32f2f; padding: 10px; margin-bottom: 15px; border-radius: 6px; text-align: center;">
+          <%= error %>
+        </div>
+      <% } %>
+
       <form action="/login" method="POST" class="forum-form">
         <div class="form-group">
           <label for="email">E-mail</label>
