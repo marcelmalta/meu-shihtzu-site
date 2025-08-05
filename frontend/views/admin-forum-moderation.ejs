@@ -23,10 +23,10 @@
               <%- thread.content %>
             </div>
             <div class="moderation-actions" style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-              <form action="/admin/forum/aprovar/<%= thread._id %>" method="POST">
+              <form action="/forum/aprovar/<%= thread._id %>" method="POST">
                 <button type="submit" class="read-more">Aprovar</button>
               </form>
-              <form action="/admin/forum/rejeitar/<%= thread._id %>" method="POST">
+              <form action="/forum/rejeitar/<%= thread._id %>" method="POST">
                 <button type="submit" class="delete-btn" onclick="return confirm('Tem certeza que deseja rejeitar (excluir) este tópico?');">Rejeitar</button>
               </form>
             </div>

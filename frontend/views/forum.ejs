@@ -88,14 +88,14 @@
                   <% } else { %>
                     <span class="category-badge">Sem Categoria</span><br>
                   <% } %>
-                  <span><%= thread.replyCount %> Respostas</span> • Criado por: <%= thread.author %>
+                  <span><%= thread.commentCount %> Comentários</span> • Criado por: <%= thread.author %>
                 </p>
               </div>
 
               <% if (currentUser && currentUser.role === 'admin') { %>
                 <div class="card-admin-actions">
                   <form action="/forum/topico/<%= thread._id %>/excluir" method="POST">
-                    <button type="submit" class="delete-btn" onclick="return confirm('Tem certeza? Isso apagará o tópico e TODAS as suas respostas.');">Excluir Tópico</button>
+                    <button type="submit" class="delete-btn" onclick="return confirm('Tem certeza? Isso apagará o tópico e TODOS os seus comentários.');">Excluir Tópico</button>
                   </form>
                 </div>
               <% } %>
