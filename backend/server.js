@@ -60,12 +60,20 @@ app.use('/api/users', userApiRoutes);
 
 // Rotas da aplicação
 app.use(authRoutes);
-app.use(postRoutes);
+
+// GARANTE QUE /noticias vai funcionar (usa postRoutes)
+// Deve estar ANTES de app.use(postRoutes) para evitar conflito
+app.use('/noticias', postRoutes);
+
+// Se quiser, ainda pode acessar notícias pela raiz também (opcional):
+// app.use(postRoutes);
+
 app.use('/forum', forumRoutes);
 app.use(productRoutes);
 
+// Redirecionamento da raiz para /noticias
 app.get('/', (req, res) => {
-  res.redirect('/noticias'); // ajuste conforme sua homepage real
+  res.redirect('/noticias');
 });
 
 async function startServer() {
