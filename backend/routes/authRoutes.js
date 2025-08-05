@@ -10,19 +10,24 @@ router.get('/login', (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
+  console.log('Tentando login:', email, password);
   try {
     const user = await User.findOne({ email });
     if (!user) {
+      console.log('Usuário não encontrado:', email);
       return res.render('login', { error: 'Usuário não encontrado.' });
     }
-    // Aqui compara a senha digitada com o hash do banco
+    console.log('Usuário encontrado. Hash no banco:', user.password);
     const valid = await bcrypt.compare(password, user.password);
+    console.log('Comparação de senha:', password, user.password, '=>', valid);
     if (!valid) {
       return res.render('login', { error: 'Senha incorreta.' });
     }
     req.session.user = { id: user._id.toString(), username: user.username, role: user.role };
+    console.log('Login realizado com sucesso para:', user.username);
     return res.redirect('/noticias'); // Ou '/' conforme sua homepage
   } catch (error) {
+    console.error('Erro ao tentar logar:', error);
     return res.render('login', { error: 'Erro ao tentar logar.' });
   }
 });
@@ -44,8 +49,10 @@ router.post('/cadastro', async (req, res) => {
     const user = new User({ username, email, password: hash });
     await user.save();
     req.session.user = { id: user._id.toString(), username: user.username, role: user.role };
+    console.log('Novo usuário cadastrado:', user.username, email);
     return res.redirect('/noticias');
   } catch (error) {
+    console.error('Erro ao tentar cadastrar:', error);
     return res.render('register', { error: 'Erro ao tentar cadastrar.' });
   }
 });
