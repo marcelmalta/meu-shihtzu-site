@@ -6,10 +6,12 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 
+// Rotas de API (REST)
 const productApiRoutes = require('./routes/api/products');
 const orderApiRoutes = require('./routes/api/orders');
 const userApiRoutes = require('./routes/api/users');
 
+// Rotas de aplicação (EJS)
 const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
 const forumRoutes = require('./routes/forumRoutes');
@@ -40,16 +42,21 @@ app.use((req, res, next) => {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'frontend', 'views'));
 
-// Rotas da API
+// Rotas da API (REST)
 app.use('/api/products', productApiRoutes);
 app.use('/api/orders', orderApiRoutes);
 app.use('/api/users', userApiRoutes);
 
-// Rotas da aplicação
-app.use(authRoutes);
-app.use(postRoutes);
-app.use('/forum', forumRoutes); // <<<<< AGORA COM PREFIXO!
-app.use(productRoutes);
+// Rotas da aplicação (EJS)
+app.use(authRoutes);          // login, logout, cadastro
+app.use(postRoutes);          // notícias, página inicial
+app.use('/forum', forumRoutes);
+app.use(productRoutes);       // produtos e admin-produtos
+
+// Rota HOME fallback para evitar "Cannot GET /"
+app.get('/', (req, res) => {
+  res.redirect('/noticias'); // ou ajuste para sua rota inicial correta, ex: 'index', '/posts', etc
+});
 
 // Iniciar servidor
 async function startServer() {
