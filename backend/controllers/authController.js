@@ -36,7 +36,11 @@ exports.register = async (req, res) => {
         backLink: '/cadastro'
       });
     }
-    const user = new User({ username, email, password });
+
+    // Gera o hash da senha ANTES de salvar
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const user = new User({ username, email, password: hashedPassword });
+
     const token = crypto.randomBytes(32).toString('hex');
     user.verificationToken = token;
     user.verificationTokenExpires = Date.now() + 3600000;
@@ -108,7 +112,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Compara senha
+    // Compara senha usando bcrypt
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).render('login', {
@@ -210,7 +214,8 @@ exports.resetPassword = async (req, res) => {
         backLink: `/resetar-senha/${token}`
       });
     }
-    user.password = password;
+    // Gera o hash da senha ANTES de salvar
+    user.password = await bcrypt.hash(password, 12);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();
