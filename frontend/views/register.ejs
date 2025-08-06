@@ -16,13 +16,19 @@
   <main class="main-content">
     <div class="container">
       <h2>Criar Nova Conta</h2>
+
+      <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+        <div class="alert alert-danger" style="color: #b30000; margin-bottom: 20px; text-align: center; font-weight: 600;">
+          <%= errorMessage %>
+        </div>
+      <% } %>
+
       <form action="/cadastro" method="POST" class="forum-form">
         <div class="form-group">
           <label for="username">Nome de Utilizador</label>
           <input type="text" id="username" name="username" required>
           <small id="username-error" style="color: #dc3545; display: none;"></small>
         </div>
-        
         <div class="form-group">
           <label for="email">E-mail</label>
           <input type="email" id="email" name="email" required>
@@ -50,7 +56,6 @@
     const usernameError = document.getElementById('username-error');
     const passwordError = document.getElementById('password-error');
 
-    // Expressão regular atualizada para permitir espaços
     const usernameRegex = /^[a-zA-ZÀ-ÿ0-9_ ]+$/;
 
     function validateForm() {
@@ -61,7 +66,7 @@
       let isUsernameFormatValid = usernameRegex.test(username);
       let isPasswordValid = password.length >= 6;
 
-      // --- Validação do Nome de Utilizador ---
+      // Validação do Nome de Utilizador
       if (username.length > 0) {
           if (!isUsernameLengthValid) {
               usernameError.textContent = 'O nome de utilizador deve ter entre 3 e 25 caracteres.';
@@ -76,7 +81,7 @@
           usernameError.style.display = 'none';
       }
 
-      // --- Validação da Senha ---
+      // Validação da Senha
       if (password.length > 0 && !isPasswordValid) {
         passwordError.textContent = 'A senha deve ter no mínimo 6 caracteres.';
         passwordError.style.display = 'block';
@@ -84,7 +89,7 @@
         passwordError.style.display = 'none';
       }
 
-      // --- Ativa ou desativa o botão ---
+      // Ativa ou desativa o botão
       if (isUsernameLengthValid && isUsernameFormatValid && isPasswordValid) {
         submitButton.disabled = false;
       } else {

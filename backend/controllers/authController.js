@@ -16,25 +16,36 @@ const transporter = nodemailer.createTransport({
 const profanity = new Profanity({ language: anENandPTsubset });
 
 exports.renderRegister = (req, res) => {
-  res.render('register');
+  res.render('register', { errorMessage: null });
 };
 
 exports.register = async (req, res) => {
   try {
-    console.log('Tentativa de cadastro:', req.body);
+    console.log('POST /cadastro chamado!');
     const { username, email, password } = req.body;
+
+    // Validação do nome de usuário
     if (profanity.exists(username)) {
-      return res.status(400).render('error', {
-        errorMessage: 'O nome de utilizador contém palavras não permitidas. Por favor, escolha outro.',
-        backLink: '/cadastro'
+      return res.status(400).render('register', {
+        errorMessage: 'O nome de utilizador contém palavras não permitidas. Por favor, escolha outro.'
       });
     }
+
+    // Verifica se já existe e-mail ou usuário igual
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
-      let message = existingUser.email === email ? 'Este e-mail já está registado.' : 'Este nome de utilizador já está a ser utilizado.';
-      return res.status(400).render('error', {
-        errorMessage: message + ' Por favor, escolha outro.',
-        backLink: '/cadastro'
+      let message = existingUser.email === email
+        ? 'Este e-mail já está registado.'
+        : 'Este nome de utilizador já está a ser utilizado.';
+      return res.status(400).render('register', {
+        errorMessage: message + ' Por favor, escolha outro.'
+      });
+    }
+
+    // Validação de senha (exemplo, mínimo 6 caracteres)
+    if (!password || password.length < 6) {
+      return res.status(400).render('register', {
+        errorMessage: 'A senha deve ter no mínimo 6 caracteres.'
       });
     }
 
@@ -42,6 +53,7 @@ exports.register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = new User({ username, email, password: hashedPassword });
 
+    // Cria token de verificação
     const token = crypto.randomBytes(32).toString('hex');
     user.verificationToken = token;
     user.verificationTokenExpires = Date.now() + 3600000;
@@ -60,12 +72,11 @@ exports.register = async (req, res) => {
     });
 
     console.log('E-mail de verificação enviado para', user.email);
-    res.render('please-verify'); // Garanta que a view existe!
+    res.render('please-verify');
   } catch (error) {
     console.error('Erro no cadastro:', error);
-    res.status(500).render('error', {
-      errorMessage: 'Erro ao tentar cadastrar: ' + error.message,
-      backLink: '/cadastro'
+    res.status(500).render('register', {
+      errorMessage: 'Erro ao tentar cadastrar: ' + error.message
     });
   }
 };
@@ -98,13 +109,12 @@ exports.verifyEmail = async (req, res) => {
 };
 
 exports.renderLogin = (req, res) => {
-  res.render('login');
+  res.render('login', { errorMessage: null });
 };
 
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    // Procura usuário pelo email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).render('login', {
@@ -112,14 +122,12 @@ exports.login = async (req, res) => {
       });
     }
 
-    // **Nova verificação: só loga se confirmado**
     if (!user.isVerified) {
       return res.status(400).render('login', {
         errorMessage: 'Por favor, confirme seu e-mail antes de fazer login.'
       });
     }
 
-    // Compara senha usando bcrypt
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).render('login', {
@@ -127,14 +135,12 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Salva dados mínimos na sessão
     req.session.user = {
       id: user._id.toString(),
       username: user.username,
       role: user.role
     };
 
-    // Redireciona para a home
     res.redirect('/');
   } catch (error) {
     console.error(error);
@@ -154,7 +160,7 @@ exports.logout = (req, res) => {
 };
 
 exports.renderForgotPassword = (req, res) => {
-  res.render('forgot-password');
+  res.render('forgot-password', { errorMessage: null });
 };
 
 exports.forgotPassword = async (req, res) => {
@@ -222,7 +228,6 @@ exports.resetPassword = async (req, res) => {
         backLink: `/resetar-senha/${token}`
       });
     }
-    // Gera o hash da senha ANTES de salvar
     user.password = await bcrypt.hash(password, 12);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
