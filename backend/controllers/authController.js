@@ -53,6 +53,7 @@ exports.register = async (req, res) => {
       subject: 'Confirme o seu Registo no Shih Tzu Notícias',
       html: `<h1>Bem-vindo!</h1><p>Por favor, clique no link a seguir para confirmar o seu e-mail: <a href="${verificationUrl}">${verificationUrl}</a></p>`
     });
+    // NÃO logue o usuário aqui! Apenas mostre a tela de verificação
     res.render('please-verify');
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -109,6 +110,13 @@ exports.login = async (req, res) => {
     if (!user) {
       return res.status(400).render('login', {
         errorMessage: 'E-mail ou senha incorretos.'
+      });
+    }
+
+    // **Nova verificação: só loga se confirmado**
+    if (!user.isVerified) {
+      return res.status(400).render('login', {
+        errorMessage: 'Por favor, confirme seu e-mail antes de fazer login.'
       });
     }
 
