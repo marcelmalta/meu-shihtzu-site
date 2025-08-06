@@ -21,6 +21,7 @@ exports.renderRegister = (req, res) => {
 
 exports.register = async (req, res) => {
   try {
+    console.log('Tentativa de cadastro:', req.body);
     const { username, email, password } = req.body;
     if (profanity.exists(username)) {
       return res.status(400).render('error', {
@@ -44,28 +45,26 @@ exports.register = async (req, res) => {
     const token = crypto.randomBytes(32).toString('hex');
     user.verificationToken = token;
     user.verificationTokenExpires = Date.now() + 3600000;
+
     await user.save();
+    console.log('Salvou usuário no banco:', user.email);
+
     const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
     const verificationUrl = `${baseUrl}/verificar-email/${token}`;
+
     await transporter.sendMail({
       to: user.email,
-      from: 'admin@shihtzuz.com',
+      from: process.env.EMAIL_USER,
       subject: 'Confirme o seu Registo no Shih Tzu Notícias',
       html: `<h1>Bem-vindo!</h1><p>Por favor, clique no link a seguir para confirmar o seu e-mail: <a href="${verificationUrl}">${verificationUrl}</a></p>`
     });
-    // NÃO logue o usuário aqui! Apenas mostre a tela de verificação
-    res.render('please-verify');
+
+    console.log('E-mail de verificação enviado para', user.email);
+    res.render('please-verify'); // Garanta que a view existe!
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      const message = Object.values(error.errors).map(val => val.message)[0];
-      return res.status(400).render('error', {
-        errorMessage: message,
-        backLink: '/cadastro'
-      });
-    }
-    console.log(error);
+    console.error('Erro no cadastro:', error);
     res.status(500).render('error', {
-      errorMessage: 'Ocorreu um erro inesperado ao criar o utilizador. Por favor, tente novamente.',
+      errorMessage: 'Erro ao tentar cadastrar: ' + error.message,
       backLink: '/cadastro'
     });
   }
@@ -171,14 +170,15 @@ exports.forgotPassword = async (req, res) => {
       const resetUrl = `${baseUrl}/resetar-senha/${token}`;
       await transporter.sendMail({
         to: user.email,
-        from: 'admin@shihtzuz.com',
+        from: process.env.EMAIL_USER,
         subject: 'Recuperação de Senha - Shih Tzu Notícias',
         html: `<h1>Recuperação de Senha</h1><p>Você solicitou a recuperação de senha. Por favor, clique no link a seguir para criar uma nova senha: <a href="${resetUrl}">${resetUrl}</a></p><p>Se você não solicitou isso, por favor, ignore este e-mail.</p>`
       });
+      console.log('E-mail de recuperação enviado para', user.email);
     }
     res.send('Se um utilizador com este e-mail existir, um link de recuperação foi enviado. Por favor, verifique a sua caixa de entrada.');
   } catch (error) {
-    console.log(error);
+    console.log('Erro ao enviar recuperação de senha:', error);
     res.status(500).send('Erro ao processar a solicitação.');
   }
 };
