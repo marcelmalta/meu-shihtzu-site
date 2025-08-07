@@ -5,54 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shih Tzu Notícias</title>
   <link rel="stylesheet" href="/css/style.css">
-  <!-- Fonte Orelega One -->
   <link href="https://fonts.googleapis.com/css2?family=Orelega+One&display=swap" rel="stylesheet">
-  <!-- Remova Poppins se quiser deixar só Orelega One -->
 </head>
 <body>
 
   <%- include('partials/header') %>
 
-  <main class="main-content">
+  <main>
     <div class="container">
       <div class="brand-title">Shihtzuz Notícias</div>
+      
       <% if (posts && posts.length > 0) { %>
-        <% const featuredPost = posts[0]; %>
-        <% const recentPosts = posts.slice(1); %>
+        <% const featuredPost = posts[0]; [cite_start]%> [cite: 2]
+        <% const recentPosts = posts.slice(1); [cite_start]%> [cite: 3]
 
-        <section class="hero-post">
-          <div class="hero-post-image">
-            <a href="/post/<%= featuredPost.slug %>">
-              <img src="<%= featuredPost.imageUrl %>" alt="<%= featuredPost.title %>">
-            </a>
-          </div>
-          <div class="hero-post-content">
-            <h2 class="main-title"><%= featuredPost.title %></h2>
-            <p><%= featuredPost.description %></p>
-            <a href="/post/<%= featuredPost.slug %>" class="read-more">Ler a Notícia Completa</a>
-          </div>
-        </section>
+        <div class="page-content-wrapper">
 
-        <% if (recentPosts.length > 0) { %>
-          <h2 class="recent-posts-title">Mais Notícias</h2>
-          <section class="post-grid">
-            <% recentPosts.forEach(post => { %>
-              <article class="post-card">
-                <a href="/post/<%= post.slug %>">
-                  <div class="post-image">
-                    <img src="<%= post.imageUrl %>" alt="<%= post.title %>" class="card-thumbnail-img">
-                  </div>
-                </a>
-                <div class="post-content">
-                  <h3 class="post-title"><%= post.title %></h3>
-                  <p><%= post.description %></p>
-                  <a href="/post/<%= post.slug %>" class="read-more">Ler Mais</a>
-                </div>
-              </article>
-            <% }) %>
+          <section class="main-feed">
+            <div class="hero-post-image">
+              <a href="/post/<%= featuredPost.slug %>">
+                <img src="<%= featuredPost.imageUrl %>" alt="<%= featuredPost.title %>">
+              </a>
+            </div>
+            <div class="hero-post-content">
+              [cite_start]<h2 class="main-title"><%= featuredPost.title %></h2> [cite: 4]
+              <p><%= featuredPost.description %></p>
+              <a href="/post/<%= featuredPost.slug %>" class="read-more">Ler a Notícia Completa</a>
+            </div>
           </section>
-        <% } %>
-      <% } else { %>
+
+          <aside class="sidebar">
+            <% if (recentPosts.length > 0) { %>
+              <h2 class="recent-posts-title">Mais Notícias</h2>
+              <section class="post-grid">
+                [cite_start]<% recentPosts.forEach(post => { %> [cite: 5]
+                  <article class="post-card">
+                    <a href="/post/<%= post.slug %>">
+                      <div class="post-image">
+                        <img src="<%= post.imageUrl %>" alt="<%= post.title %>" class="card-thumbnail-img">
+                      [cite_start]</div> [cite: 6]
+                    </a>
+                    <div class="post-content">
+                      <h3 class="post-title"><%= post.title %></h3>
+                      <p><%= post.description %></p>
+                      [cite_start]<a href="/post/<%= post.slug %>" class="read-more">Ler Mais</a> [cite: 7]
+                    </div>
+                  </article>
+                <% }) %>
+              </section>
+
+              <div class="load-more-container">
+                <button class="load-more-btn">Carregar Mais</button> 
+              </div>
+            <% } %>
+          </aside>
+
+        </div> <% } else { %>
         <h2 style="text-align: center;">Nenhuma notícia publicada ainda.</h2>
       <% } %>
     </div>
