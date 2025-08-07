@@ -1105,3 +1105,138 @@ h1, h2, h3 {
   background: #333;
   border-radius: 8px;
 }
+
+/* ================================================= */
+/* ESTILOS ATUALIZADOS PARA MOBILE (BASE) */
+/* ================================================= */
+
+/* Definindo nossas variáveis de cor com base no design */
+:root {
+    --cor-primaria: #CAD347;
+    --cor-fundo-escuro: #171816;
+    --cor-cinza-claro: #D9D9D9;
+    --cor-fundo-geral: #FFFFFF;
+    --cor-texto-principal: #171816;
+}
+
+/* Estilos globais e reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Helvetica', sans-serif; /* Uma fonte padrão limpa */
+    background-color: var(--cor-fundo-geral);
+    color: var(--cor-texto-principal);
+}
+
+/* ... Estilos do .main-header e .logo que já fizemos ... */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--cor-fundo-escuro);
+    padding: 1rem 1.5rem;
+}
+
+.logo {
+    font-family: 'Orelega One', serif;
+    font-size: 2rem;
+    color: var(--cor-primaria);
+}
+
+.menu-desktop {
+    display: none;
+}
+
+.menu-hamburguer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+.menu-hamburguer span { /* Estilo para os 3 tracinhos brancos */
+    width: 100%;
+    height: 3px;
+    background-color: white;
+    border-radius: 2px;
+}
+
+
+.page-title-container h1, .sidebar h2 {
+    font-family: 'Orelega One', serif;
+    text-align: center;
+    /* AJUSTE: Adicionando a sombra do texto */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.page-title-container {
+    padding: 2rem 1rem;
+}
+.page-title-container h1 {
+    font-size: 2.5rem;
+}
+
+
+.page-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 0 1rem;
+    gap: 2rem;
+}
+
+/* Card principal ("Novidades") */
+.main-feed {
+    background-color: var(--cor-cinza-claro);
+    min-height: 250px;
+    border-radius: 8px;
+}
+
+/* Seção "Mais Notícias" */
+.sidebar h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+/* === MUDANÇA PRINCIPAL AQUI === */
+.post-grid {
+    display: grid;
+    /* No seu design mobile, são 2 colunas */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 1rem; /* Espaço entre os cards da grade */
+}
+
+.small-news-card {
+    background-color: var(--cor-cinza-claro);
+    /* min-height define a altura mínima, mas a altura real pode ser maior */
+    min-height: 150px; 
+    border-radius: 8px;
+}
+
+/* === NOVO ESTILO PARA O BOTÃO "CARREGAR MAIS" === */
+.load-more-container {
+    padding: 1rem 0;
+}
+.load-more-btn {
+    display: block;
+    width: 100%;
+    background-color: var(--cor-cinza-claro);
+    min-height: 50px; /* Altura do placeholder */
+    border: none;
+    border-radius: 8px;
+    /* Poderíamos adicionar um texto, mas por enquanto só o fundo cinza */
+}
+
+
+/* Rodapé */
+.main-footer {
+    margin-top: 3rem;
+    background-color: var(--cor-cinza-claro);
+    min-height: 200px;
+}
