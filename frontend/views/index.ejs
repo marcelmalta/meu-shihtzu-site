@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shih Tzu Notícias</title>
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Fonte Orelega One -->
+  <link href="https://fonts.googleapis.com/css2?family=Orelega+One&display=swap" rel="stylesheet">
+  <!-- Remova Poppins se quiser deixar só Orelega One -->
 </head>
 <body>
 
@@ -15,7 +15,7 @@
 
   <main class="main-content">
     <div class="container">
-      
+      <div class="brand-title">Shihtzuz Notícias</div>
       <% if (posts && posts.length > 0) { %>
         <% const featuredPost = posts[0]; %>
         <% const recentPosts = posts.slice(1); %>
@@ -27,7 +27,7 @@
             </a>
           </div>
           <div class="hero-post-content">
-            <h2><%= featuredPost.title %></h2>
+            <h2 class="main-title"><%= featuredPost.title %></h2>
             <p><%= featuredPost.description %></p>
             <a href="/post/<%= featuredPost.slug %>" class="read-more">Ler a Notícia Completa</a>
           </div>
@@ -44,7 +44,7 @@
                   </div>
                 </a>
                 <div class="post-content">
-                  <h3><%= post.title %></h3>
+                  <h3 class="post-title"><%= post.title %></h3>
                   <p><%= post.description %></p>
                   <a href="/post/<%= post.slug %>" class="read-more">Ler Mais</a>
                 </div>
@@ -52,11 +52,9 @@
             <% }) %>
           </section>
         <% } %>
-
       <% } else { %>
         <h2 style="text-align: center;">Nenhuma notícia publicada ainda.</h2>
       <% } %>
-      
     </div>
   </main>
 
